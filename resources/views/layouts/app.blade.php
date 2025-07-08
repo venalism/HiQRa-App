@@ -14,38 +14,39 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .animate-fadeIn {
             animation: fadeIn 0.5s ease-out;
         }
-        
+
         .btn-hover {
             transition: all 0.2s ease;
         }
-        
+
         .btn-hover:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        
+
         .card-simple {
             transition: box-shadow 0.2s ease;
         }
-        
+
         .card-simple:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Custom red gradient */
         .red-gradient {
             background: linear-gradient(135deg, #dc2626, #991b1b);
         }
-        
+
         .text-red-gradient {
             background: linear-gradient(135deg, #dc2626, #991b1b);
             -webkit-background-clip: text;
@@ -64,15 +65,34 @@
                 <h1 class="text-xl font-bold text-gray-900">
                     @yield('header')
                 </h1>
-                <button onclick="window.history.back()"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg inline-flex items-center btn-hover">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </button>
+
+                <div class="flex items-center gap-2">
+                    <!-- Tombol Kembali -->
+                    <button onclick="window.history.back()"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg inline-flex items-center btn-hover">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Kembali
+                    </button>
+
+                    <!-- Tombol Logout -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg inline-flex items-center btn-hover">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V3"></path>
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </header>
+
 
         {{-- Konten Dinamis --}}
         <div class="max-w-6xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
