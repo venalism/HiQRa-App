@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,6 +134,32 @@
             font-size: 0.85rem;
         }
 
+        .login-back-button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.85rem;
+            margin-top: 0.5rem;
+            background: #fff;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.06);
+        }
+
+        .login-back-button:hover,
+        .login-back-button:focus {
+            background: #dc2626;
+            color: #fff;
+            border-color: #991b1b;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.18);
+        }
+
         /* Loading state */
         .loading {
             position: relative;
@@ -154,8 +181,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive */
@@ -164,13 +196,14 @@
                 padding: 2rem;
                 margin: 10px;
             }
-            
+
             .login-header h1 {
                 font-size: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-header">
@@ -187,35 +220,24 @@
 
         <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
-            
+
             <div class="input-group">
                 <label for="email">📧 Email</label>
-                <input 
-                    id="email" 
-                    type="email" 
-                    name="email" 
-                    value="{{ old('email') }}" 
-                    required 
-                    autofocus
-                    placeholder="masukkan email anda"
-                >
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                    placeholder="masukkan email anda">
             </div>
 
             <div class="input-group">
                 <label for="password">🔒 Password</label>
-                <input 
-                    id="password" 
-                    type="password" 
-                    name="password" 
-                    required
-                    placeholder="masukkan password anda"
-                >
+                <input id="password" type="password" name="password" required placeholder="masukkan password anda">
             </div>
 
             <button type="submit" class="login-button" id="loginBtn">
                 Masuk
             </button>
-
+            <a href="/" class="login-back-button">
+                ← Kembali ke Beranda
+            </a>
             @error('email')
                 <div class="error-message">
                     {{ $message }}
@@ -244,4 +266,5 @@
         });
     </script>
 </body>
+
 </html>
