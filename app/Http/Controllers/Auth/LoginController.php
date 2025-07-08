@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class LoginController extends Controller
 {
     /**
@@ -13,6 +14,10 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return redirect('/');
+            // Atau redirect('/dashboard') jika ingin ke dashboard
+        }
         return view('auth.login');
     }
 
