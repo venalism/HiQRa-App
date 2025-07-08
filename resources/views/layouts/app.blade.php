@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Aplikasi Absensi QR')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src=""></script>
     <style>
         /* Simple animations */
         @keyframes fadeIn {
