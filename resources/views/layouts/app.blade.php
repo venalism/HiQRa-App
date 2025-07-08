@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Aplikasi Absensi QR')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src=""></script>
+    <script src="{{ asset('css/css_tailwind.css') }}" rel="stylesheet"></script>
     <style>
         /* Simple animations */
         @keyframes fadeIn {
