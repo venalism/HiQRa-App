@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PesertaController;
+use App\Http\Controllers\PanitiaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\DashboardController;
 
@@ -33,14 +34,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
-    Route::post('/scan/store', [AbsensiController::class, 'store'])->name('absensi.store');
-
+    Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
+    
     // CRUD Routes for Peserta
     Route::resource('peserta', PesertaController::class);
+    Route::resource('panitia', PanitiaController::class);
 });
 
 // Publicly accessible QR Code for participants
 Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'showQrCode'])->name('peserta.qr');
+Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'showQrCode'])->name('panitia.qr');
 
 // CRUD Routes for Kegiatan
 Route::resource('kegiatan', KegiatanController::class);

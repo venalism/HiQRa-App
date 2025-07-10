@@ -252,14 +252,14 @@
 
     <script>
         // Add loading state to button
-        document.getElementById('loginForm').addEventListener('submit', function() {
+        document.getElementById('loginForm').addEventListener('submit', function () {
             const btn = document.getElementById('loginBtn');
             btn.classList.add('loading');
             btn.disabled = true;
         });
 
         // Add enter key support
-        document.addEventListener('keypress', function(e) {
+        document.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 document.getElementById('loginForm').submit();
             }

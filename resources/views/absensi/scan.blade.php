@@ -91,7 +91,7 @@
                 qrbox: { width: 250, height: 250 },
                 rememberLastUsedCamera: true
             },
-                /* verbose= */ false);
+                    /* verbose= */ false);
 
         html5QrcodeScanner.render(onScanSuccess, onScanError);
     </script>

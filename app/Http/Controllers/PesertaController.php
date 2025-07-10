@@ -8,6 +8,12 @@ use Illuminate\Support\Str;
 
 class PesertaController extends Controller
 {
+    // Definisikan kelas peserta di sini
+    private $kelasOptions = [
+        'D3 1A', 'D3 2A', 'D3 3A',
+        'D4 1A', 'D4 1B', 'D4 1C', 'D4 2A', 'D4 2B', 'D4 3A', 'D4 3B'
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -22,7 +28,8 @@ class PesertaController extends Controller
      */
     public function create()
     {
-        return view('peserta.create');
+        // Kirim opsi kelas ke view
+        return view('peserta.create', ['kelasOptions' => $this->kelasOptions]);
     }
 
     /**
@@ -48,7 +55,11 @@ class PesertaController extends Controller
      */
     public function edit(Peserta $peserta)
     {
-        return view('peserta.edit', compact('peserta'));
+        // Kirim opsi kelas dan data peserta ke view
+        return view('peserta.edit', [
+            'peserta' => $peserta,
+            'kelasOptions' => $this->kelasOptions
+        ]);
     }
 
     /**
