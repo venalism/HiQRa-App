@@ -46,8 +46,8 @@ class Absensi extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function panitia()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Panitia::class);
     }
 }

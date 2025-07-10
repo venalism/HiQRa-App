@@ -59,6 +59,25 @@
                 </div>
             </div>
 
+            <!-- Kelola Panitia Button -->
+            <div class="bg-white rounded-lg shadow-md card-simple p-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 red-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Kelola Panitia</h3>
+                    <p class="text-gray-600 text-sm mb-4">Tambah, edit, dan kelola data para panitia kegiatan</p>
+                    <a href="{{ route('panitia.index') }}"
+                        class="btn-hover inline-block w-full py-3 px-4 red-gradient text-white rounded-md font-medium hover:bg-gray-700">
+                        Kelola Data
+                    </a>
+                </div>
+            </div>
+
             <!-- Kelola Kegiatan Button -->
             <div class="bg-white rounded-lg shadow-md card-simple p-6">
                 <div class="text-center">
@@ -88,6 +107,10 @@
             <div class="bg-white rounded-lg shadow-md p-4 text-center">
                 <div class="text-2xl font-bold text-gray-800">{{ $totalPeserta }}</div>
                 <div class="text-sm text-gray-600">Total Peserta</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-4 text-center">
+                <div class="text-2xl font-bold text-gray-800">{{ $totalPanitia }}</div>
+                <div class="text-sm text-gray-600">Total Panitia</div>
             </div>
             <div class="bg-white rounded-lg shadow-md p-4 text-center">
                 <div class="text-2xl font-bold text-gray-800">{{ $totalKegiatan }}</div>
