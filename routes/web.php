@@ -34,8 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
-    Route::post('/scan/store', [AbsensiController::class, 'store'])->name('absensi.store');
-
+    Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
+    
     // CRUD Routes for Peserta
     Route::resource('peserta', PesertaController::class);
     Route::resource('panitia', PanitiaController::class);
