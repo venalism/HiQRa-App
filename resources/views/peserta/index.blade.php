@@ -62,7 +62,7 @@
                                                 </path>
                                             </svg>
                                         </a>
-                                        <a href="{{ route('peserta.edit', $p->id) }}"
+                                        <a href="{{ route('peserta.edit', ['pesertum' => $p->id]) }}"
                                             class="text-yellow-600 hover:text-yellow-900" title="Edit">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
