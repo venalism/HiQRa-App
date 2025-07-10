@@ -6,14 +6,19 @@ use App\Models\Panitia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class panitiaController extends Controller
+class PanitiaController extends Controller
 {
+    // Definisikan jabatan panitia di sini
+    private $jabatanOptions = [
+        'BPH', 'Multimedia', 'Kaderisasi', 'Akademisi', 'Humas', 'Pelatihan', 'Minat Bakat'
+    ];
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $panitia = panitia::latest()->paginate(10);
+        $panitia = Panitia::latest()->paginate(10);
         return view('panitia.index', compact('panitia'));
     }
 
@@ -22,7 +27,8 @@ class panitiaController extends Controller
      */
     public function create()
     {
-        return view('panitia.create');
+        // Kirim opsi jabatan ke view
+        return view('panitia.create', ['jabatanOptions' => $this->jabatanOptions]);
     }
 
     /**
@@ -37,7 +43,7 @@ class panitiaController extends Controller
             'jabatan' => 'nullable|string|max:255',
         ]);
 
-        panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
+        Panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
 
         return redirect()->route('panitia.index')
                          ->with('success', 'panitia berhasil ditambahkan.');
@@ -46,15 +52,19 @@ class panitiaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(panitia $panitia)
+    public function edit(Panitia $panitia)
     {
-        return view('panitia.edit', compact('panitia'));
+        // Kirim opsi jabatan dan data panitia ke view
+        return view('panitia.edit', [
+            'panitia' => $panitia,
+            'jabatanOptions' => $this->jabatanOptions
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, panitia $panitia)
+    public function update(Request $request, Panitia $panitia)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -72,7 +82,7 @@ class panitiaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(panitia $panitia)
+    public function destroy(Panitia $panitia)
     {
         $panitia->delete();
 
@@ -85,7 +95,7 @@ class panitiaController extends Controller
      * @param  \App\Models\panitia  $panitia
      * @return \Illuminate\View\View
      */
-    public function showQrCode(panitia $panitia)
+    public function showQrCode(Panitia $panitia)
     {
         return view('panitia.qr', compact('panitia'));
     }

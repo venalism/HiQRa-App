@@ -435,31 +435,23 @@
     <nav class="nav-header">
         <div class="nav-container">
             <a href="/" class="logo">HiQRa</a>
-                @if (Route::has('login'))
-                    @auth
-                        <a
-                            href="{{ url('/dashboard') }}"
-                            class="nav-link"
-                        >
-                            Dashboard
-                        </a>
-                    @else
-                        <a
-                            href="{{ route('login') }}"
-                            class="nav-link"
-                        >
-                            Log in
-                        </a>
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="nav-link">
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link">
+                        Log in
+                    </a>
 
-                        @if (Route::has('register'))
-                            <a
-                                href="{{ route('register') }}"
-                                class="nav-link">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-   
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="nav-link">
+                            Register
+                        </a>
+                    @endif
+                @endauth
+
             @endif
 
         </div>
@@ -483,8 +475,7 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
-                            stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                             <rect x="7" y="7" width="3" height="3" />
                             <rect x="14" y="7" width="3" height="3" />
@@ -501,8 +492,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
-                            stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z" />
                             <path d="M21 11h-4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2z" />
                             <path d="M7 2v9" />
@@ -518,8 +508,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
-                            stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <path d="M4 4h16v4H4z"></path>
                             <path d="M4 10h16v4H4z"></path>
                             <path d="M4 16h16v4H4z"></path>
@@ -534,8 +523,7 @@
 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white"
-                            stroke-width="2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                             <path
                                 d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
@@ -553,8 +541,7 @@
         <!-- Floating QR Animation -->
         <div class="qr-animation">
             <svg width="300" height="300" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="20" y="20" width="160" height="160" rx="8" fill="none" stroke="#dc2626"
-                    stroke-width="2" />
+                <rect x="20" y="20" width="160" height="160" rx="8" fill="none" stroke="#dc2626" stroke-width="2" />
                 <rect x="30" y="30" width="30" height="30" rx="4" fill="#dc2626" />
                 <rect x="140" y="30" width="30" height="30" rx="4" fill="#dc2626" />
                 <rect x="30" y="140" width="30" height="30" rx="4" fill="#dc2626" />
