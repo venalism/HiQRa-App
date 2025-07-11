@@ -1,3 +1,3 @@
 HiQRa
 
-by
+by rendy & nadi
