@@ -81,7 +81,7 @@ Silakan fork proyek ini, buat fitur baru, atau perbaiki bug. Jangan lupa buat pu
 
 ## 📩 Kontak
 
-- 📧 **Rendy** – [email@example.com]  
+- 📧 **Rendy** – [rendykamaluddin@ulbi.ac.id]  
 - 📧 **Nadi** – [email@example.com]  
 - 📱 Instagram: [@hiqra_app](https://instagram.com/hiqra_app)
 
