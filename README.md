@@ -48,7 +48,7 @@ cd hiqra
 
 3. Instal dependensi (jika menggunakan Node.js):  
 ```bash
-npm install
+npm install (masih belum memakai)
 ```
 
 4. Buat file `.env` dan atur konfigurasi database kamu.
