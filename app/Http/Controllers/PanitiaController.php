@@ -8,13 +8,19 @@ use Illuminate\Support\Str;
 
 class PanitiaController extends Controller
 {
-    // Definisikan jabatan panitia di sini
+    // Definisikan opsi jabatan panitia
     private $jabatanOptions = [
-        'BPH', 'Multimedia', 'Kaderisasi', 'Akademisi', 'Humas', 'Pelatihan', 'Minat Bakat'
+        'BPH',
+        'Multimedia',
+        'Kaderisasi',
+        'Akademisi',
+        'Humas',
+        'Pelatihan',
+        'Minat Bakat'
     ];
 
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar panitia.
      */
     public function index()
     {
@@ -23,16 +29,17 @@ class PanitiaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk menambahkan panitia baru.
      */
     public function create()
     {
-        // Kirim opsi jabatan ke view
-        return view('panitia.create', ['jabatanOptions' => $this->jabatanOptions]);
+        return view('panitia.create', [
+            'jabatanOptions' => $this->jabatanOptions
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data panitia baru.
      */
     public function store(Request $request)
     {
@@ -46,23 +53,22 @@ class PanitiaController extends Controller
         Panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
 
         return redirect()->route('panitia.index')
-                         ->with('success', 'panitia berhasil ditambahkan.');
+            ->with('success', 'Panitia berhasil ditambahkan.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit panitia.
      */
     public function edit(Panitia $panitia)
     {
-        // Kirim opsi jabatan dan data panitia ke view
         return view('panitia.edit', [
             'panitia' => $panitia,
-            'jabatanOptions' => $this->jabatanOptions
+            'jabatanOptions' => $this->jabatanOptions,
         ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data panitia.
      */
     public function update(Request $request, Panitia $panitia)
     {
@@ -76,24 +82,22 @@ class PanitiaController extends Controller
         $panitia->update($request->all());
 
         return redirect()->route('panitia.index')
-                         ->with('success', 'Data panitia berhasil diperbarui.');
+            ->with('success', 'Data panitia berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus data panitia.
      */
     public function destroy(Panitia $panitia)
     {
         $panitia->delete();
 
         return redirect()->route('panitia.index')
-                         ->with('success', 'panitia berhasil dihapus.');
+            ->with('success', 'Panitia berhasil dihapus.');
     }
+
     /**
-     * Menampilkan halaman QR Code untuk panitia tertentu.
-     *
-     * @param  \App\Models\panitia  $panitia
-     * @return \Illuminate\View\View
+     * Menampilkan halaman QR Code panitia.
      */
     public function showQrCode(Panitia $panitia)
     {
