@@ -28,7 +28,7 @@ Tampilan yang modern dan adaptif di berbagai perangkat, lengkap dengan opsi dark
 ## 🛠️ Teknologi yang Digunakan
 
 - **Frontend**: HTML, CSS Tailwind, JavaScript
-- **Backend**: PHP / Node.js (sesuaikan dengan implementasi)
+- **Backend**: PHP 
 - **Database**: MySQL / Firebase / MongoDB
 - **Library Tambahan**: QR Code Generator, SweetAlert, Chart.js
 
