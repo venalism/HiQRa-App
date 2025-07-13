@@ -21,7 +21,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('peserta.update', ['pesertum' => $peserta->id]) }}" method="POST">
+            <form action="{{ route('peserta.update', ['peserta' => $peserta->id]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -52,8 +52,9 @@
                         <select name="jabatan" id="jabatan"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm">
                             <option value="" disabled>Pilih Kelas</option>
-                            @foreach($kelasOptions as $kelas)
-                                <option value="{{ $kelas }}" {{ old('jabatan', $peserta->jabatan) == $kelas ? 'selected' : '' }}>
+                            @foreach ($kelasOptions as $kelas)
+                                <option value="{{ $kelas }}"
+                                    {{ old('kelas', $peserta->kelas) == $kelas ? 'selected' : '' }}>
                                     {{ $kelas }}</option>
                             @endforeach
                         </select>
