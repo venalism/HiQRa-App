@@ -1,4 +1,4 @@
-# 🧠 HiQRa — Himatif QR Absensi Web  
+# 🧠 HiQRa — Himatif QR Absensi Website
 **by Rendy & Nadi**
 
 Selamat datang di **HiQRa**!  
