@@ -10,7 +10,12 @@
     <div class="animate-fadeIn">
         <div class="bg-white rounded-lg shadow-md card-simple p-6">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Daftar panitia</h3>
+               
+                    <a href="{{ route('dashboard') }}"
+                        class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md font-semibold shadow-md transition">
+                        ← Dashboard
+                    </a>
+               <h3 class="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Daftar Panitia</h3>
                 <a href="{{ route('panitia.create') }}"
                     class="btn-hover w-full sm:w-auto px-5 py-2 red-gradient text-white rounded-md font-semibold shadow-lg">
                     Tambah panitia
