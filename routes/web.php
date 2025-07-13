@@ -35,16 +35,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
     Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
-    
+
     // CRUD Routes for Peserta
-    Route::resource('peserta', PesertaController::class);
-    Route::resource('panitia', PanitiaController::class);
+    Route::resource('peserta', PesertaController::class)->parameters([
+        'peserta' => 'peserta'
+    ]);
+    Route::resource('panitia', PanitiaController::class)->parameters([
+        'panitia' => 'panitia'
+    ]);
+
+    // Publicly accessible QR Code for participants
+    Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'showQrCode'])->name('peserta.qr');
+    Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'showQrCode'])->name('panitia.qr');
+
+    // CRUD Routes for Kegiatan
+    Route::resource('kegiatan', KegiatanController::class);
 });
-
-// Publicly accessible QR Code for participants
-Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'showQrCode'])->name('peserta.qr');
-Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'showQrCode'])->name('panitia.qr');
-
-// CRUD Routes for Kegiatan
-Route::resource('kegiatan', KegiatanController::class);
-
