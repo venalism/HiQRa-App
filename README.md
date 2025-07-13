@@ -29,7 +29,7 @@ Tampilan yang modern dan adaptif di berbagai perangkat, lengkap dengan opsi dark
 
 - **Frontend**: HTML, CSS Tailwind, JavaScript
 - **Backend**: PHP 
-- **Database**: MySQL / Firebase / MongoDB
+- **Database**: MySQL 
 - **Library Tambahan**: QR Code Generator, SweetAlert, Chart.js
 
 ---
