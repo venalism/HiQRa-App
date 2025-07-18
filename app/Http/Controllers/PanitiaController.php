@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class PanitiaController extends Controller
 {
-    // Definisikan opsi jabatan panitia
+    // Definisikan opsi
     private $jabatanOptions = [
         'BPH',
         'Multimedia',
@@ -18,6 +18,12 @@ class PanitiaController extends Controller
         'Pelatihan',
         'Minat Bakat'
     ];
+    private $prodiOptions = ['D3', 'D4'];
+    private $kelasOptions = [
+        'D3 1A', 'D3 2A', 'D3 3A',
+        'D4 1A', 'D4 1B', 'D4 1C', 'D4 2A', 'D4 2B', 'D4 3A', 'D4 3B'
+    ];
+    private $tingkatOptions = ['1', '2', '3', '4'];
 
     /**
      * Menampilkan daftar panitia.
@@ -34,7 +40,10 @@ class PanitiaController extends Controller
     public function create()
     {
         return view('panitia.create', [
-            'jabatanOptions' => $this->jabatanOptions
+            'jabatanOptions' => $this->jabatanOptions,
+            'prodiOptions' => $this->prodiOptions,
+            'kelasOptions' => $this->kelasOptions,
+            'tingkatOptions' => $this->tingkatOptions,
         ]);
     }
 
@@ -48,6 +57,9 @@ class PanitiaController extends Controller
             'email' => 'required|string|email|max:255|unique:panitia',
             'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:255',
+            'prodi' => 'nullable|string|max:255',
+            'kelas' => 'nullable|string|max:255',
+            'tingkat' => 'nullable|string|max:255',
         ]);
 
         Panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
@@ -64,6 +76,9 @@ class PanitiaController extends Controller
         return view('panitia.edit', [
             'panitia' => $panitia,
             'jabatanOptions' => $this->jabatanOptions,
+            'prodiOptions' => $this->prodiOptions,
+            'kelasOptions' => $this->kelasOptions,
+            'tingkatOptions' => $this->tingkatOptions,
         ]);
     }
 
@@ -77,6 +92,9 @@ class PanitiaController extends Controller
             'email' => 'required|string|email|max:255|unique:panitia,email,' . $panitia->id,
             'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:255',
+            'prodi' => 'nullable|string|max:255',
+            'kelas' => 'nullable|string|max:255',
+            'tingkat' => 'nullable|string|max:255',
         ]);
 
         $panitia->update($request->all());
