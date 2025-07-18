@@ -35,6 +35,10 @@ class KegiatanController extends Controller
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
+            'target_prodi' => 'nullable|string|max:255',
+            'target_kelas' => 'nullable|string|max:255',
+            'target_tingkat' => 'nullable|string|max:255',
+            'target_jabatan' => 'nullable|string|max:255',
         ]);
 
         Kegiatan::create($request->all());
@@ -70,6 +74,10 @@ class KegiatanController extends Controller
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
+            'target_prodi' => 'nullable|string|max:255',
+            'target_kelas' => 'nullable|string|max:255',
+            'target_tingkat' => 'nullable|string|max:255',
+            'target_jabatan' => 'nullable|string|max:255',
         ]);
 
         $kegiatan->update($request->all());
