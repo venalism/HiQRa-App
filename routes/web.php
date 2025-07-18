@@ -7,6 +7,8 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\PanitiaController;
 use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProdiController;
+use App\Http\Controllers\KelasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,21 +35,28 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
-    Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
+    // Admin-only routes
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
+        Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
 
-    // CRUD Routes for Peserta
-    Route::resource('peserta', PesertaController::class)->parameters([
-        'peserta' => 'peserta'
-    ]);
-    Route::resource('panitia', PanitiaController::class)->parameters([
-        'panitia' => 'panitia'
-    ]);
+        // CRUD Routes for Peserta
+        Route::resource('peserta', PesertaController::class)->parameters([
+            'peserta' => 'peserta'
+        ]);
+        Route::resource('panitia', PanitiaController::class)->parameters([
+            'panitia' => 'panitia'
+        ]);
+
+        // CRUD Routes for Kegiatan
+        Route::resource('kegiatan', KegiatanController::class);
+
+        // CRUD Routes for Prodi
+        Route::resource('prodi', ProdiController::class)->except(['create', 'show', 'edit']);
+        Route::resource('kelas', KelasController::class)->except(['create', 'show', 'edit']);
+    });
 
     // Publicly accessible QR Code for participants
     Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'showQrCode'])->name('peserta.qr');
     Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'showQrCode'])->name('panitia.qr');
-
-    // CRUD Routes for Kegiatan
-    Route::resource('kegiatan', KegiatanController::class);
 });

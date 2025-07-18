@@ -53,6 +53,39 @@
                         @enderror
                     </div>
 
+                    <!-- Target Opsional -->
+                    <div class="md:col-span-2 border-t pt-4 mt-2">
+                        <p class="text-sm text-gray-600 mb-2"><b>Target Peserta (Opsional):</b> Kosongkan jika kegiatan ini terbuka untuk umum.</p>
+                    </div>
+
+                    <!-- Target Prodi -->
+                    <div>
+                        <label for="target_prodi" class="block text-sm font-medium text-gray-700 mb-1">Target Prodi</label>
+                        <input type="text" name="target_prodi" id="target_prodi" class="input-field"
+                            value="{{ old('target_prodi') }}">
+                    </div>
+
+                    <!-- Target Kelas -->
+                    <div>
+                        <label for="target_kelas" class="block text-sm font-medium text-gray-700 mb-1">Target Kelas</label>
+                        <input type="text" name="target_kelas" id="target_kelas" class="input-field"
+                            value="{{ old('target_kelas') }}">
+                    </div>
+
+                    <!-- Target Tingkat -->
+                    <div>
+                        <label for="target_tingkat" class="block text-sm font-medium text-gray-700 mb-1">Target Tingkat</label>
+                        <input type="text" name="target_tingkat" id="target_tingkat" class="input-field"
+                            value="{{ old('target_tingkat') }}">
+                    </div>
+
+                    <!-- Target Jabatan -->
+                    <div>
+                        <label for="target_jabatan" class="block text-sm font-medium text-gray-700 mb-1">Target Jabatan</label>
+                        <input type="text" name="target_jabatan" id="target_jabatan" class="input-field"
+                            value="{{ old('target_jabatan') }}">
+                    </div>
+
                     <!-- Deskripsi -->
                     <div class="md:col-span-2">
                         <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi
