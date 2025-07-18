@@ -16,8 +16,22 @@ class Peserta extends Model
         'email',
         'no_hp',
         'jabatan',
+        'prodi',
+        'kelas',
+        'tingkat',
         'barcode',
+        'user_id',
     ];
+
+    /**
+     * Get the user that owns the Peserta
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get all of the absensi for the Peserta
