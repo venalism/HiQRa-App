@@ -8,11 +8,13 @@ use Illuminate\Support\Str;
 
 class PesertaController extends Controller
 {
-    // Definisikan kelas peserta di sini
+    // Definisikan opsi di sini
+    private $prodiOptions = ['D3', 'D4'];
     private $kelasOptions = [
         'D3 1A', 'D3 2A', 'D3 3A',
         'D4 1A', 'D4 1B', 'D4 1C', 'D4 2A', 'D4 2B', 'D4 3A', 'D4 3B'
     ];
+    private $tingkatOptions = ['1', '2', '3', '4'];
 
     /**
      * Display a listing of the resource.
@@ -28,8 +30,11 @@ class PesertaController extends Controller
      */
     public function create()
     {
-        // Kirim opsi kelas ke view
-        return view('peserta.create', ['kelasOptions' => $this->kelasOptions]);
+        return view('peserta.create', [
+            'prodiOptions' => $this->prodiOptions,
+            'kelasOptions' => $this->kelasOptions,
+            'tingkatOptions' => $this->tingkatOptions,
+        ]);
     }
 
     /**
@@ -42,6 +47,9 @@ class PesertaController extends Controller
             'email' => 'required|string|email|max:255|unique:peserta',
             'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:255',
+            'prodi' => 'nullable|string|max:255',
+            'kelas' => 'nullable|string|max:255',
+            'tingkat' => 'nullable|string|max:255',
         ]);
 
         Peserta::create($request->all() + ['barcode' => (string) Str::uuid()]);
@@ -55,10 +63,11 @@ class PesertaController extends Controller
      */
     public function edit(Peserta $peserta)
     {
-        // Kirim opsi kelas dan data peserta ke view
         return view('peserta.edit', [
             'peserta' => $peserta,
-            'kelasOptions' => $this->kelasOptions
+            'prodiOptions' => $this->prodiOptions,
+            'kelasOptions' => $this->kelasOptions,
+            'tingkatOptions' => $this->tingkatOptions,
         ]);
     }
 
@@ -72,6 +81,9 @@ class PesertaController extends Controller
             'email' => 'required|string|email|max:255|unique:peserta,email,' . $peserta->id,
             'no_hp' => 'nullable|string|max:20',
             'jabatan' => 'nullable|string|max:255',
+            'prodi' => 'nullable|string|max:255',
+            'kelas' => 'nullable|string|max:255',
+            'tingkat' => 'nullable|string|max:255',
         ]);
 
         $peserta->update($request->all());
