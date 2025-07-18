@@ -17,6 +17,10 @@ class Kegiatan extends Model
         'tanggal',
         'waktu',
         'lokasi',
+        'target_prodi',
+        'target_kelas',
+        'target_tingkat',
+        'target_jabatan',
     ];
 
     /**
