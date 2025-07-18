@@ -20,16 +20,10 @@ return new class extends Migration
 
         Schema::table('peserta', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->string('prodi')->nullable()->after('jabatan');
-            $table->string('kelas')->nullable()->after('prodi');
-            $table->string('tingkat')->nullable()->after('kelas');
         });
 
         Schema::table('panitia', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->string('prodi')->nullable()->after('jabatan');
-            $table->string('kelas')->nullable()->after('prodi');
-            $table->string('tingkat')->nullable()->after('kelas');
         });
     }
 

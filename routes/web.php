@@ -9,7 +9,8 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\KelasController;
-
+use App\Http\Controllers\JabatanController;
+use App\Http\Controllers\DivisiController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -50,13 +51,16 @@ Route::middleware(['auth'])->group(function () {
 
         // CRUD Routes for Kegiatan
         Route::resource('kegiatan', KegiatanController::class);
-
+        // CRUD Routes for Jabatan
+        Route::resource('jabatan', JabatanController::class)->except(['create', 'show', 'edit']);
+        // CRUD Routes for Divisi
+        Route::resource('divisi', DivisiController::class)->except(['create', 'show', 'edit']);
         // CRUD Routes for Prodi
         Route::resource('prodi', ProdiController::class)->except(['create', 'show', 'edit']);
         Route::resource('kelas', KelasController::class)->except(['create', 'show', 'edit']);
     });
 
     // Publicly accessible QR Code for participants
-    Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'showQrCode'])->name('peserta.qr');
-    Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'showQrCode'])->name('panitia.qr');
+    Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'qr'])->name('peserta.qr');
+    Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'qr'])->name('panitia.qr');
 });

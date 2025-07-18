@@ -11,7 +11,7 @@
         <div class="p-8 text-center border-b">
             <h2 class="text-2xl font-bold text-gray-800">{{ $panitia->nama }}</h2>
             <p class="text-gray-600 mt-2">
-                Silakan tunjukkan QR Code ini kepada panitia untuk melakukan absensi.
+                Silakan tunjukkan QR Code ini kepada penjaga untuk melakukan absensi.
             </p>
         </div>
         <div class="p-6 flex justify-center items-center bg-gray-50 rounded-b-lg">

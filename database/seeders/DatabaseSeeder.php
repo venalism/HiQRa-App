@@ -32,22 +32,5 @@ class DatabaseSeeder extends Seeder
             'role' => 'panitia',
         ]);
 
-        // Membuat Kegiatan
-        Kegiatan::create([
-            'nama_kegiatan' => 'Seminar Teknologi AI 2025',
-            'deskripsi' => 'Seminar tahunan membahas perkembangan terbaru di dunia Artificial Intelligence.',
-            'tanggal' => '2025-09-15',
-            'waktu' => '09:00:00',
-            'lokasi' => 'Gedung Serbaguna Kampus',
-        ]);
-
-        // Membuat Peserta
-        Peserta::create([
-            'nama' => 'Budi Santoso',
-            'email' => 'budi.santoso@example.com',
-            'no_hp' => '081234567890',
-            'jabatan' => 'Mahasiswa',
-            'barcode' => (string) Str::uuid(), // Generate unique barcode
-        ]);
     }
 }

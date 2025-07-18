@@ -73,8 +73,8 @@
                 <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Master Data</h3>
                 <a href="{{ route('prodi.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Prodi</a>
                 <a href="{{ route('kelas.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kelas</a>
-                <a href="#" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan</a>
-                <a href="#" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Divisi</a>
+                <a href="{{ route('jabatan.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan</a>
+                <a href="{{ route('divisi.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Divisi</a>
             </nav>
         </aside>
         @endif

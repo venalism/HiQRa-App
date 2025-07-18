@@ -7,25 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Absensi;
 use App\Models\Kegiatan;
+use App\Models\Divisi;
+use App\Models\jabatan;
+
 
 class Panitia extends Model
 {
     use HasFactory;
 
-    protected $table = 'panitia';
-
-    protected $fillable = [
-        'nama',
-        'email',
-        'no_hp',
-        'jabatan',
-        'prodi',
-        'kelas',
-        'tingkat',
-        'barcode',
-        'user_id',
-    ];
-
+    protected $table = 'panitia'; // Pastikan sesuai dengan nama tabel
+    protected $fillable = ['nama', 'email', 'no_hp', 'divisi_id','barcode'];
     /**
      * Get the user that owns the Panitia
      *
@@ -36,6 +27,10 @@ class Panitia extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class);
+    }
     /**
      * Get all of the absensi for the Peserta
      *
@@ -54,5 +49,9 @@ class Panitia extends Model
     public function kegiatan()
     {
         return $this->belongsToMany(Kegiatan::class, 'absensi');
+    }
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class);
     }
 }
