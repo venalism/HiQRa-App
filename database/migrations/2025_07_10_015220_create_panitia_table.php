@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('no_hp')->nullable();
-            $table->string('jabatan')->nullable();
             $table->string('barcode')->unique();
             $table->timestamps();
         });
