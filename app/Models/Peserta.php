@@ -15,10 +15,8 @@ class Peserta extends Model
         'nama',
         'email',
         'no_hp',
-        'jabatan',
         'prodi',
-        'kelas',
-        'tingkat',
+        'kelas_id',
         'barcode',
         'user_id',
     ];
@@ -51,5 +49,13 @@ class Peserta extends Model
     public function kegiatan()
     {
         return $this->belongsToMany(Kegiatan::class, 'absensi');
+    }
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class);
     }
 }
