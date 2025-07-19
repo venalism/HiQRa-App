@@ -10,12 +10,8 @@ class Divisi extends Model
     use HasFactory;
 
     protected $table = 'divisis'; // Pastikan sesuai dengan nama tabel kamu
-    protected $fillable = ['nama_divisi'];
+    protected $fillable = ['nama', 'jabatan_id'];
 
-    public function panitias()
-    {
-        return $this->hasMany(Panitia::class);
-    }
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class);
