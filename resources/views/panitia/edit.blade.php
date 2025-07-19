@@ -38,7 +38,7 @@
                         <option value="">-- Pilih Divisi --</option>
                         @foreach ($divisis as $divisi)
                             <option value="{{ $divisi->id }}" {{ $divisi->id == old('divisi_id', $panitia->divisi_id) ? 'selected' : '' }}>
-                                {{ $divisi->nama }}
+                              {{ $divisi->jabatan->nama }} - {{ $divisi->nama }}
                             </option>
                         @endforeach
                     </select>
