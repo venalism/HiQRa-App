@@ -3,113 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peserta;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+
 class PesertaController extends Controller
 {
-    // Definisikan opsi di sini
-    private $prodiOptions = ['D3', 'D4'];
-    private $kelasOptions = [
-        'D3 1A', 'D3 2A', 'D3 3A',
-        'D4 1A', 'D4 1B', 'D4 1C', 'D4 2A', 'D4 2B', 'D4 3A', 'D4 3B'
-    ];
-    private $tingkatOptions = ['1', '2', '3', '4'];
-
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $peserta = Peserta::latest()->paginate(10);
+        $peserta = Peserta::with(['kelas.prodi'])->paginate(10);
         return view('peserta.index', compact('peserta'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('peserta.create', [
-            'prodiOptions' => $this->prodiOptions,
-            'kelasOptions' => $this->kelasOptions,
-            'tingkatOptions' => $this->tingkatOptions,
-        ]);
+        $kelas = Kelas::all();
+        return view('peserta.create', compact('kelas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:peserta',
-            'no_hp' => 'nullable|string|max:20',
-            'jabatan' => 'nullable|string|max:255',
-            'prodi' => 'nullable|string|max:255',
-            'kelas' => 'nullable|string|max:255',
-            'tingkat' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:255',
+            'kelas_id' => 'nullable|exists:kelas,id',
         ]);
-
         Peserta::create($request->all() + ['barcode' => (string) Str::uuid()]);
-
-        return redirect()->route('peserta.index')
-                         ->with('success', 'Peserta berhasil ditambahkan.');
+        return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Peserta $peserta)
+    public function edit($id)
     {
-        return view('peserta.edit', [
-            'peserta' => $peserta,
-            'prodiOptions' => $this->prodiOptions,
-            'kelasOptions' => $this->kelasOptions,
-            'tingkatOptions' => $this->tingkatOptions,
-        ]);
+        $peserta = Peserta::findOrFail($id);
+        $kelas = Kelas::all();
+        return view('peserta.edit', compact('peserta', 'kelas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Peserta $peserta)
+    public function update(Request $request, $id)
     {
+        $peserta = Peserta::findOrFail($id);
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:peserta,email,' . $peserta->id,
-            'no_hp' => 'nullable|string|max:20',
-            'jabatan' => 'nullable|string|max:255',
-            'prodi' => 'nullable|string|max:255',
-            'kelas' => 'nullable|string|max:255',
-            'tingkat' => 'nullable|string|max:255',
+            'email' => 'required|string|email|max:255|unique:peserta,email,' . $id,
+            'no_hp' => 'nullable|string|max:255',
+            'kelas_id' => 'nullable|exists:kelas,id',
         ]);
 
         $peserta->update($request->all());
 
-        return redirect()->route('peserta.index')
-                         ->with('success', 'Data peserta berhasil diperbarui.');
+        return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Peserta $peserta)
+    public function destroy($id)
     {
+        $peserta = Peserta::findOrFail($id);
         $peserta->delete();
 
-        return redirect()->route('peserta.index')
-                         ->with('success', 'Peserta berhasil dihapus.');
+        return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil dihapus.');
     }
-    /**
-     * Menampilkan halaman QR Code untuk peserta tertentu.
-     *
-     * @param  \App\Models\Peserta  $peserta
-     * @return \Illuminate\View\View
-     */
-    public function showQrCode(Peserta $peserta)
+
+    public function qr($id)
     {
+        $peserta = Peserta::findOrFail($id);
+
+        // Logic untuk menampilkan halaman QR Code bisa ditambahkan di sini
         return view('peserta.qr', compact('peserta'));
     }
 }
