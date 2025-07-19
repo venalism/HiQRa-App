@@ -43,7 +43,7 @@
                 <select id="divisi_id" name="divisi_id" class="mt-1 form-select block w-full">
                     <option value="">-- Pilih Divisi --</option>
                     @foreach ($divisi as $d)
-                        <option value="{{ $d->id }}">{{ $d->nama_divisi ?? $d->nama }}</option>
+                        <option value="{{ $d->id }}">{{ $d->jabatan->nama }} - {{  $d->nama }}</option>
                     @endforeach
                 </select>
             </div>
