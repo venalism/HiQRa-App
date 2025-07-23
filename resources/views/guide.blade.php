@@ -216,8 +216,8 @@
                         berikut secara berurutan:</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/sidebar-navigation.png" alt="Screenshot Sidebar Navigation"> -->
-                        Gambar Sidebar Navigation - Menu navigasi untuk mengakses master data
+                         <img src="{{ asset('images/guide2.png') }}" alt="Guide 2">
+                    =
                     </div>
                     <p class="image-caption">Sidebar navigasi untuk mengakses menu master data</p>
 
