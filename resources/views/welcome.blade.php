@@ -469,7 +469,7 @@
 
             <div class="cta-buttons">
                 <a href="/dashboard" class="btn-primary">Mulai Absensi</a>
-                <a href="/about" class="btn-secondary">Pelajari Lebih Lanjut</a>
+                <a href="{{ route('guide') }}" class="btn-secondary">Pelajari Lebih Lanjut</a>
             </div>
 
             <div class="features-grid">
