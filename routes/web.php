@@ -26,6 +26,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/guide', function () {
+    return view('guide');
+})->name('guide');
+
 // Authentication Routes
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
