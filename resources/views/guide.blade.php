@@ -134,6 +134,39 @@
             margin: 0;
             color: #fca5a5;
         }
+
+        /* Style untuk gambar */
+        .step-image {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(220, 38, 38, 0.5);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            color: #9ca3af;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        .image-caption {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -168,6 +201,12 @@
                 <div class="step">
                     <p>Pertama, login ke akun admin Anda. Anda akan disambut oleh <b>Dashboard</b>, yang menampilkan
                         ringkasan data penting seperti jumlah kegiatan, peserta, dan panitia.</p>
+                    
+                    <div class="step-image">
+                        <!-- <img src="path/to/dashboard-screenshot.png" alt="Screenshot Dashboard HiQRa"> -->
+                        Gambar Dashboard - Tampilan halaman utama admin dengan ringkasan data
+                    </div>
+                    <p class="image-caption">Contoh tampilan Dashboard admin HiQRa</p>
                 </div>
 
                 <h2>Langkah 2: Mengisi Master Data (WAJIB)</h2>
@@ -177,6 +216,12 @@
                         kumpulan data dasar yang akan digunakan di seluruh aplikasi. Buka sidebar navigasi dan isi data
                         berikut secara berurutan:</p>
 
+                    <div class="step-image">
+                        <!-- <img src="path/to/sidebar-navigation.png" alt="Screenshot Sidebar Navigation"> -->
+                        Gambar Sidebar Navigation - Menu navigasi untuk mengakses master data
+                    </div>
+                    <p class="image-caption">Sidebar navigasi untuk mengakses menu master data</p>
+
                     <h3>Untuk Peserta:</h3>
                     <ul>
                         <li><strong>Manajemen Prodi:</strong> Isi semua program studi yang ada (contoh: Teknik
@@ -185,6 +230,12 @@
                             DKV-45-INT).</li>
                     </ul>
 
+                    <div class="step-image">
+                        <!-- <img src="path/to/master-data-prodi-kelas.png" alt="Screenshot Manajemen Prodi dan Kelas"> -->
+                        Gambar Manajemen Prodi & Kelas - Form untuk menambah dan mengelola data prodi dan kelas
+                    </div>
+                    <p class="image-caption">Halaman manajemen Program Studi dan Kelas</p>
+
                     <h3>Untuk Panitia:</h3>
                     <ul>
                         <li><strong>Manajemen Jabatan:</strong> Isi semua jabatan kepanitiaan (contoh: Ketua Pelaksana,
@@ -192,6 +243,12 @@
                         <li><strong>Manajemen Divisi:</strong> Isi semua divisi yang ada (contoh: Divisi Acara, Divisi
                             Keamanan).</li>
                     </ul>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/master-data-jabatan-divisi.png" alt="Screenshot Manajemen Jabatan dan Divisi"> -->
+                        Gambar Manajemen Jabatan & Divisi - Form untuk menambah dan mengelola data jabatan dan divisi panitia
+                    </div>
+                    <p class="image-caption">Halaman manajemen Jabatan dan Divisi panitia</p>
 
                     <div class="important">
                         <p><strong>PENTING:</strong> Anda tidak bisa menambahkan Peserta atau Panitia jika data-data di
@@ -208,8 +265,27 @@
                         <li><strong>Manajemen Peserta:</strong> Tambahkan data peserta. Anda akan diminta memilih Prodi
                             dan Kelas.</li>
                     </ul>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/add-panitia-form.png" alt="Screenshot Form Tambah Panitia"> -->
+                        Gambar Form Tambah Panitia - Form untuk mendaftarkan panitia baru dengan pilihan jabatan dan divisi
+                    </div>
+                    <p class="image-caption">Form untuk menambahkan data panitia baru</p>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/add-peserta-form.png" alt="Screenshot Form Tambah Peserta"> -->
+                        Gambar Form Tambah Peserta - Form untuk mendaftarkan peserta baru dengan pilihan prodi dan kelas
+                    </div>
+                    <p class="image-caption">Form untuk menambahkan data peserta baru</p>
+
                     <p>Setiap panitia dan peserta yang berhasil dibuat akan otomatis memiliki QR Code unik mereka
                         sendiri.</p>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/qr-code-example.png" alt="Screenshot Contoh QR Code"> -->
+                        Gambar Contoh QR Code - QR Code unik yang digenerate untuk setiap pengguna
+                    </div>
+                    <p class="image-caption">Contoh QR Code yang digenerate untuk setiap pengguna</p>
                 </div>
 
                 <h2>Langkah 4: Membuat Kegiatan</h2>
@@ -219,6 +295,19 @@
                         <li>Buka menu <b>Manajemen Kegiatan</b> dan klik "Tambah Kegiatan".</li>
                         <li>Isi nama kegiatan, tanggal, dan deskripsi.</li>
                     </ul>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/kegiatan-management.png" alt="Screenshot Manajemen Kegiatan"> -->
+                        Gambar Manajemen Kegiatan - Daftar kegiatan dan tombol untuk menambah kegiatan baru
+                    </div>
+                    <p class="image-caption">Halaman manajemen kegiatan</p>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/add-kegiatan-form.png" alt="Screenshot Form Tambah Kegiatan"> -->
+                        Gambar Form Tambah Kegiatan - Form untuk membuat kegiatan baru dengan nama, tanggal, dan deskripsi
+                    </div>
+                    <p class="image-caption">Form untuk menambahkan kegiatan baru</p>
+
                     <p>Kegiatan yang Anda buat di sini akan menjadi pilihan saat melakukan absensi.</p>
                 </div>
 
@@ -230,6 +319,25 @@
                         <li>Pilih kegiatan mana yang sedang berlangsung.</li>
                         <li>Arahkan kamera ke QR Code milik panitia atau peserta untuk mencatat kehadiran mereka.</li>
                     </ul>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/scan-qr-interface.png" alt="Screenshot Interface Scan QR"> -->
+                        Gambar Interface Scan QR - Halaman untuk memilih kegiatan dan melakukan scanning QR Code
+                    </div>
+                    <p class="image-caption">Interface untuk scanning QR Code</p>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/camera-scanning.png" alt="Screenshot Kamera Scanning QR"> -->
+                        Gambar Kamera Scanning - Tampilan kamera saat melakukan scan QR Code
+                    </div>
+                    <p class="image-caption">Tampilan kamera saat melakukan scan QR Code</p>
+
+                    <div class="step-image">
+                        <!-- <img src="path/to/attendance-success.png" alt="Screenshot Absensi Berhasil"> -->
+                        Gambar Konfirmasi Absensi - Notifikasi ketika absensi berhasil tercatat
+                    </div>
+                    <p class="image-caption">Konfirmasi ketika absensi berhasil tercatat</p>
+
                     <div class="important">
                         <p><strong>PENTING:</strong> Fitur Scan QR hanya bisa berfungsi jika minimal ada satu pengguna
                             (Peserta/Panitia) dan satu Kegiatan yang sudah terdaftar di sistem.</p>
