@@ -203,8 +203,7 @@
                         ringkasan data penting seperti jumlah kegiatan, peserta, dan panitia.</p>
                     
                     <div class="step-image">
-                        <!-- <img src="path/to/dashboard-screenshot.png" alt="Screenshot Dashboard HiQRa"> -->
-                        Gambar Dashboard - Tampilan halaman utama admin dengan ringkasan data
+                        <img src="{{ asset('images/guide1.png') }}" alt="Guide 1">
                     </div>
                     <p class="image-caption">Contoh tampilan Dashboard admin HiQRa</p>
                 </div>
