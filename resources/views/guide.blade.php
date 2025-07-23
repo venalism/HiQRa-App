@@ -85,31 +85,54 @@
             text-align: center;
         }
 
-        .guide-content h3 {
-            font-size: 1.5rem;
+        .guide-content h2 {
+            font-size: 1.75rem;
             color: #ffffff;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
             border-bottom: 2px solid #dc2626;
             padding-bottom: 0.5rem;
+        }
+
+        .guide-content h3 {
+            font-size: 1.25rem;
+            color: #e5e7eb;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
         }
 
         .guide-content p,
         .guide-content li {
             color: #d1d5db;
-            line-height: 1.6;
+            line-height: 1.7;
             margin-bottom: 1rem;
+            font-size: 1rem;
         }
 
         .guide-content ul {
             padding-left: 1.5rem;
+            list-style-type: '✓  ';
         }
 
-        .guide-content code {
-            background-color: #333;
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            font-family: 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', "Liberation Mono", "Courier New", 'monospace';
+        .guide-content .step {
+            background-color: rgba(45, 45, 45, 0.85);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #dc2626;
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-content .important {
+            background-color: rgba(220, 38, 38, 0.1);
+            border-left-color: #fca5a5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .guide-content .important p {
+            margin: 0;
+            color: #fca5a5;
         }
     </style>
 </head>
@@ -136,38 +159,83 @@
 
     <section class="guide-section">
         <div class="guide-container">
-            <h1 class="guide-title">Panduan Penggunaan HiQRa</h1>
+            <h1 class="guide-title">Panduan Alur Kerja Admin</h1>
             <div class="guide-content">
-                <h3>Untuk Admin</h3>
-                <p>
-                    Sebagai admin, Anda memiliki akses penuh untuk mengelola seluruh aspek aplikasi HiQRa. Berikut adalah panduan singkat untuk setiap fitur:
-                </p>
-                <ul>
-                    <li><strong>Dashboard:</strong> Halaman utama setelah login, menampilkan ringkasan data seperti jumlah peserta, panitia, kegiatan, dan rekap absensi harian.</li>
-                    <li><strong>Manajemen Kegiatan:</strong> Buat, edit, dan hapus kegiatan. Setiap kegiatan akan memiliki QR Code unik yang bisa di-generate.</li>
-                    <li><strong>Manajemen Peserta & Panitia:</strong> Kelola data peserta dan panitia, termasuk membuat akun baru, mengubah data, dan menghapus akun.</li>
-                    <li><strong>Scan QR Code:</strong> Fitur untuk melakukan absensi dengan memindai QR Code milik peserta atau panitia.</li>
-                    <li><strong>Rekap Absensi:</strong> Lihat riwayat dan rekapitulasi kehadiran dari setiap kegiatan, dengan opsi untuk mengekspor data ke dalam format Excel atau PDF.</li>
-                </ul>
+                <p>Selamat datang di HiQRa! Halaman ini akan memandu Anda (sebagai Admin) untuk menggunakan aplikasi
+                    dari awal hingga siap digunakan untuk absensi.</p>
 
-                <h3>Untuk Panitia</h3>
-                <p>
-                    Panitia dapat membantu admin dalam mengelola kegiatan dan absensi. Berikut adalah hal yang bisa Anda lakukan:
-                </p>
-                <ul>
-                    <li><strong>Scan QR Code:</strong> Sama seperti admin, panitia dapat melakukan scan QR Code untuk mencatat kehadiran.</li>
-                    <li><strong>Melihat Dashboard Pribadi:</strong> Panitia dapat melihat rekap kehadiran mereka sendiri untuk kegiatan yang diikutinya.</li>
-                </ul>
+                <h2>Langkah 1: Login & Memahami Dashboard</h2>
+                <div class="step">
+                    <p>Pertama, login ke akun admin Anda. Anda akan disambut oleh <b>Dashboard</b>, yang menampilkan
+                        ringkasan data penting seperti jumlah kegiatan, peserta, dan panitia.</p>
+                </div>
 
-                <h3>Untuk Peserta</h3>
-                <p>
-                    Peserta adalah pengguna utama yang akan melakukan absensi. Berikut adalah alurnya:
-                </p>
-                <ul>
-                    <li><strong>Mendapatkan QR Code:</strong> Setiap peserta akan memiliki QR Code unik yang dapat diakses melalui profil mereka (jika fitur login peserta diaktifkan) atau dibagikan oleh admin/panitia.</li>
-                    <li><strong>Proses Absensi:</strong> Tunjukkan QR Code Anda kepada panitia yang bertugas pada saat kegiatan berlangsung untuk dipindai.</li>
-                    <li><strong>Cek Riwayat Kehadiran:</strong> Peserta dapat melihat riwayat kehadiran mereka sendiri melalui halaman profil (jika tersedia).</li>
-                </ul>
+                <h2>Langkah 2: Mengisi Master Data (WAJIB)</h2>
+                <div class="step">
+                    <p>Ini adalah <b>langkah paling penting</b> sebelum Anda bisa menambahkan pengguna. Master data
+                        adalah
+                        kumpulan data dasar yang akan digunakan di seluruh aplikasi. Buka sidebar navigasi dan isi data
+                        berikut secara berurutan:</p>
+
+                    <h3>Untuk Peserta:</h3>
+                    <ul>
+                        <li><strong>Manajemen Prodi:</strong> Isi semua program studi yang ada (contoh: Teknik
+                            Informatika, DKV).</li>
+                        <li><strong>Manajemen Kelas:</strong> Isi semua kelas yang relevan (contoh: IF-45-01,
+                            DKV-45-INT).</li>
+                    </ul>
+
+                    <h3>Untuk Panitia:</h3>
+                    <ul>
+                        <li><strong>Manajemen Jabatan:</strong> Isi semua jabatan kepanitiaan (contoh: Ketua Pelaksana,
+                            Sekretaris, Bendahara).</li>
+                        <li><strong>Manajemen Divisi:</strong> Isi semua divisi yang ada (contoh: Divisi Acara, Divisi
+                            Keamanan).</li>
+                    </ul>
+
+                    <div class="important">
+                        <p><strong>PENTING:</strong> Anda tidak bisa menambahkan Peserta atau Panitia jika data-data di
+                            atas masih kosong.</p>
+                    </div>
+                </div>
+
+                <h2>Langkah 3: Menambahkan Pengguna</h2>
+                <div class="step">
+                    <p>Setelah master data lengkap, sekarang Anda bisa mendaftarkan pengguna:</p>
+                    <ul>
+                        <li><strong>Manajemen Panitia:</strong> Tambahkan data panitia. Anda akan diminta memilih
+                            Jabatan dan Divisi dari data yang sudah Anda isi di Langkah 2.</li>
+                        <li><strong>Manajemen Peserta:</strong> Tambahkan data peserta. Anda akan diminta memilih Prodi
+                            dan Kelas.</li>
+                    </ul>
+                    <p>Setiap panitia dan peserta yang berhasil dibuat akan otomatis memiliki QR Code unik mereka
+                        sendiri.</p>
+                </div>
+
+                <h2>Langkah 4: Membuat Kegiatan</h2>
+                <div class="step">
+                    <p>Sekarang, buat acara atau kegiatan yang akan diadakan.</p>
+                    <ul>
+                        <li>Buka menu <b>Manajemen Kegiatan</b> dan klik "Tambah Kegiatan".</li>
+                        <li>Isi nama kegiatan, tanggal, dan deskripsi.</li>
+                    </ul>
+                    <p>Kegiatan yang Anda buat di sini akan menjadi pilihan saat melakukan absensi.</p>
+                </div>
+
+                <h2>Langkah 5: Melakukan Scan QR (Absensi)</h2>
+                <div class="step">
+                    <p>Ini adalah fitur utama yang akan digunakan saat acara berlangsung.</p>
+                    <ul>
+                        <li>Buka menu <b>Scan QR</b> dari sidebar.</li>
+                        <li>Pilih kegiatan mana yang sedang berlangsung.</li>
+                        <li>Arahkan kamera ke QR Code milik panitia atau peserta untuk mencatat kehadiran mereka.</li>
+                    </ul>
+                    <div class="important">
+                        <p><strong>PENTING:</strong> Fitur Scan QR hanya bisa berfungsi jika minimal ada satu pengguna
+                            (Peserta/Panitia) dan satu Kegiatan yang sudah terdaftar di sistem.</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
