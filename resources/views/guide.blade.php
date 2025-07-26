@@ -243,8 +243,7 @@
                     </ul>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/master-data-jabatan-divisi.png" alt="Screenshot Manajemen Jabatan dan Divisi"> -->
-                        Gambar Manajemen Jabatan & Divisi - Form untuk menambah dan mengelola data jabatan dan divisi panitia
+                        <img src="{{ asset('images/guide4.png') }}" alt="Guide 2">
                     </div>
                     <p class="image-caption">Halaman manajemen Jabatan dan Divisi panitia</p>
 
