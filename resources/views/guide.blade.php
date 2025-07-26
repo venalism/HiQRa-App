@@ -264,8 +264,7 @@
                     </ul>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/add-panitia-form.png" alt="Screenshot Form Tambah Panitia"> -->
-                        Gambar Form Tambah Panitia - Form untuk mendaftarkan panitia baru dengan pilihan jabatan dan divisi
+                        <img src="{{ asset('images/guide5.png') }}" alt="Guide 2">
                     </div>
                     <p class="image-caption">Form untuk menambahkan data panitia baru</p>
 
