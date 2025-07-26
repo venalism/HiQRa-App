@@ -231,7 +231,6 @@
 
                     <div class="step-image">
                         <img src="{{ asset('images/guide3.png') }}" alt="Guide 2">
-                        Gambar Manajemen Prodi & Kelas - Form untuk menambah dan mengelola data prodi dan kelas
                     </div>
                     <p class="image-caption">Halaman manajemen Program Studi dan Kelas</p>
 
