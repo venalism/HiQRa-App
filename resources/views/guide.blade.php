@@ -293,8 +293,7 @@
                     </ul>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/kegiatan-management.png" alt="Screenshot Manajemen Kegiatan"> -->
-                        Gambar Manajemen Kegiatan - Daftar kegiatan dan tombol untuk menambah kegiatan baru
+                        <img src="{{ asset('images/guide8.png') }}" alt="Guide 8">
                     </div>
                     <p class="image-caption">Halaman manajemen kegiatan</p>
 
