@@ -230,7 +230,7 @@
                     </ul>
 
                     <div class="step-image">
-                        <img src="{{ asset('images/guide3.png') }}" alt="Guide 2">
+                        <img src="{{ asset('images/guide3.png') }}" alt="Guide 3">
                     </div>
                     <p class="image-caption">Halaman manajemen Program Studi dan Kelas</p>
 
@@ -243,7 +243,7 @@
                     </ul>
 
                     <div class="step-image">
-                        <img src="{{ asset('images/guide4.png') }}" alt="Guide 2">
+                        <img src="{{ asset('images/guide4.png') }}" alt="Guide 4">
                     </div>
                     <p class="image-caption">Halaman manajemen Jabatan dan Divisi panitia</p>
 
@@ -264,13 +264,13 @@
                     </ul>
 
                     <div class="step-image">
-                        <img src="{{ asset('images/guide5.png') }}" alt="Guide 2">
+                        <img src="{{ asset('images/guide5.png') }}" alt="Guide 5">
                     </div>
                     <p class="image-caption">Form untuk menambahkan data panitia baru</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/add-peserta-form.png" alt="Screenshot Form Tambah Peserta"> -->
-                        Gambar Form Tambah Peserta - Form untuk mendaftarkan peserta baru dengan pilihan prodi dan kelas
+                        <img src="{{ asset('images/guide6.png') }}" alt="Guide 6">
+                
                     </div>
                     <p class="image-caption">Form untuk menambahkan data peserta baru</p>
 
