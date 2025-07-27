@@ -298,8 +298,8 @@
                     <p class="image-caption">Halaman manajemen kegiatan</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/add-kegiatan-form.png" alt="Screenshot Form Tambah Kegiatan"> -->
-                        Gambar Form Tambah Kegiatan - Form untuk membuat kegiatan baru dengan nama, tanggal, dan deskripsi
+                        <img src="{{ asset('images/guide9.png') }}" alt="Guide 9">
+                       
                     </div>
                     <p class="image-caption">Form untuk menambahkan kegiatan baru</p>
 
