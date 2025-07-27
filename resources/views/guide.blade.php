@@ -278,7 +278,7 @@
                         sendiri.</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/qr-code-example.png" alt="Screenshot Contoh QR Code"> -->
+                        <img src="{{ asset('images/guide6.png') }}" alt="Guide 2">
                         Gambar Contoh QR Code - QR Code unik yang digenerate untuk setiap pengguna
                     </div>
                     <p class="image-caption">Contoh QR Code yang digenerate untuk setiap pengguna</p>
