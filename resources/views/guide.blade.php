@@ -298,8 +298,8 @@
                     <p class="image-caption">Halaman manajemen kegiatan</p>
 
                     <div class="step-image">
+                        {{-- perlu diganti nanti --}}
                         <img src="{{ asset('images/guide9.png') }}" alt="Guide 9">
-                       
                     </div>
                     <p class="image-caption">Form untuk menambahkan kegiatan baru</p>
 
