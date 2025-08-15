@@ -51,4 +51,12 @@ class Absensi extends Model
     {
         return $this->belongsTo(Panitia::class);
     }
+
+    /**
+     * Mendapatkan data user (panitia/admin) yang mencatat absensi.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

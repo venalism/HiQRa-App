@@ -9,6 +9,9 @@ use App\Models\Kegiatan;
 use App\Models\Peserta;
 use App\Models\Panitia;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\PesertaAbsensiExport;
+use App\Exports\PanitiaAbsensiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RiwayatAbsensiController extends Controller
 {
@@ -98,6 +101,16 @@ class RiwayatAbsensiController extends Controller
         Absensi::create($dataToSave);
 
         return back()->with('success', 'Absensi manual berhasil ditambahkan.');
+    }
+
+    public function exportPesertaExcel(Request $request)
+    {
+        return Excel::download(new PesertaAbsensiExport($request), 'riwayat_absensi_peserta.xlsx');
+    }
+
+    public function exportPanitiaExcel(Request $request)
+    {
+        return Excel::download(new PanitiaAbsensiExport($request), 'riwayat_absensi_panitia.xlsx');
     }
 
     public function update(Request $request, Absensi $absensi)

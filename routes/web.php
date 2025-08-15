@@ -44,13 +44,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat-absensi/peserta', [RiwayatAbsensiController::class, 'riwayatPeserta'])->name('riwayat.peserta');
     Route::get('/riwayat-absensi/panitia', [RiwayatAbsensiController::class, 'riwayatPanitia'])->name('riwayat.panitia');
     Route::post('/riwayat-absensi/manual', [RiwayatAbsensiController::class, 'storeManual'])->name('riwayat.manual.store');
-    Route::put('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'update'])->name('admin.riwayat.update');
-    Route::delete('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'destroy'])->name('admin.riwayat.destroy');
+    Route::put('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'update'])->name('riwayat.update');
+    Route::delete('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'destroy'])->name('riwayat.destroy');
+    
 
     // Admin-only routes
     Route::middleware(['admin'])->group(function () {
         Route::get('/scan', [AbsensiController::class, 'scan'])->name('absensi.scan');
         Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
+        Route::get('/riwayat-absensi/peserta/export', [RiwayatAbsensiController::class, 'exportPesertaExcel'])->name('riwayat.peserta.export');
+        Route::get('/riwayat-absensi/panitia/export', [RiwayatAbsensiController::class, 'exportPanitiaExcel'])->name('riwayat.panitia.export');
 
         // CRUD Routes for Peserta
         Route::resource('peserta', PesertaController::class)->parameters([

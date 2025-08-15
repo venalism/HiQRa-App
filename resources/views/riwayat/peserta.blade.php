@@ -23,9 +23,14 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Data Riwayat</h3>
-                        <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none">
-                            Tambah Manual
-                        </button>
+                         <div class="flex space-x-2">
+                            <a href="{{ route('riwayat.peserta.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                Export Excel
+                            </a>
+                            <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-500">
+                                Tambah Manual
+                            </button>
+                        </div>
                     </div>
 
                     <form method="GET" action="{{ route('riwayat.peserta') }}" class="mb-6">

@@ -27,7 +27,7 @@ class PesertaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:peserta',
-            'no_hp' => 'nullable|string|max:255',
+            'no_hp' => 'required|string|max:15|unique:peserta,no_hp',
             'kelas_id' => 'nullable|exists:kelas,id',
         ]);
         Peserta::create($request->all() + ['barcode' => (string) Str::uuid()]);
@@ -48,7 +48,7 @@ class PesertaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:peserta,email,' . $id,
-            'no_hp' => 'nullable|string|max:255',
+            'no_hp' => 'required|string|max:15|unique:peserta,no_hp,',
             'kelas_id' => 'nullable|exists:kelas,id',
         ]);
 

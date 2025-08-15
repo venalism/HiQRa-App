@@ -28,7 +28,7 @@ class PanitiaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:panitia',
-            'no_hp' => 'nullable|string|max:255',
+             'no_hp' => 'required|string|max:15|unique:panitia,no_hp',
             'divisi_id' => 'nullable|exists:divisis,id',
         ]);
         Panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
@@ -49,7 +49,7 @@ class PanitiaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:panitia,email,' . $id,
-            'no_hp' => 'nullable|string|max:255',
+            'no_hp' => 'required|string|max:15|unique:panitia,no_hp',
             'divisi_id' => 'nullable|exists:divisis,id',
         ]);
 
