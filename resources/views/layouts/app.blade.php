@@ -60,23 +60,37 @@
 
     <div class="flex">
         @if(Auth::check() && Auth::user()->role === 'admin')
-        <!-- Sidebar -->
-        <aside class="w-64 bg-gray-800 text-white min-h-screen p-4">
-            <div class="text-2xl font-bold mb-8 text-center text-red-gradient">HiQRa</div>
-            <nav>
-                <a href="{{ route('dashboard') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Dashboard</a>
-                <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Manajemen</h3>
-                <a href="{{ route('kegiatan.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kegiatan</a>
-                <a href="{{ route('panitia.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Panitia</a>
-                <a href="{{ route('peserta.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Peserta</a>
-                
-                <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Master Data</h3>
-                <a href="{{ route('prodi.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Prodi</a>
-                <a href="{{ route('kelas.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kelas</a>
-                <a href="{{ route('jabatan.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan</a>
-                <a href="{{ route('divisi.index') }}" class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Divisi</a>
-            </nav>
-        </aside>
+            <!-- Sidebar -->
+            <aside class="w-64 bg-gray-800 text-white min-h-screen p-4">
+                <div class="text-2xl font-bold mb-8 text-center text-red-gradient">HiQRa</div>
+                <nav>
+                    <a href="{{ route('dashboard') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Dashboard</a>
+                    <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Manajemen</h3>
+                    <a href="{{ route('kegiatan.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kegiatan</a>
+                    <a href="{{ route('panitia.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Panitia</a>
+                    <a href="{{ route('peserta.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Peserta</a>
+
+                    <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Manajemen</h3>
+                    <a href="{{ route('riwayat.peserta') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi Peserta</a>
+                    <a href="{{ route('riwayat.panitia') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi Panitia</a>
+
+                    <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Master Data</h3>
+                    <a href="{{ route('prodi.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Prodi</a>
+                    <a href="{{ route('kelas.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kelas</a>
+                    <a href="{{ route('jabatan.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan</a>
+                    <a href="{{ route('divisi.index') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Divisi</a>
+                </nav>
+            </aside>
         @endif
 
         <!-- Main Content -->
@@ -126,6 +140,8 @@
     <footer class="bg-gray-800 text-white text-center py-4">
         <p class="text-sm">&copy; {{ date('Y') }} Aplikasi Himatif</p>
     </footer>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
 </body>
 

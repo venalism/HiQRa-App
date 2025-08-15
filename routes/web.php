@@ -11,6 +11,8 @@ use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\DivisiController;
+use App\Http\Controllers\RiwayatAbsensiController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,6 +41,9 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/riwayat-absensi/peserta', [RiwayatAbsensiController::class, 'riwayatPeserta'])->name('riwayat.peserta');
+    Route::get('/riwayat-absensi/panitia', [RiwayatAbsensiController::class, 'riwayatPanitia'])->name('riwayat.panitia');
+    Route::post('/riwayat-absensi/manual', [RiwayatAbsensiController::class, 'storeManual'])->name('riwayat.manual.store');
 
     // Admin-only routes
     Route::middleware(['admin'])->group(function () {
