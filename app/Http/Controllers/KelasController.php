@@ -23,7 +23,7 @@ class KelasController extends Controller
      */
     public function create()
     {
-        $prodis = Prodi::all();
+        $prodis = Prodi::orderBy('nama')->get(); // Ambil semua prodi untuk dropdown
         return view('kelas.create', compact('prodis'));
     }
 
@@ -53,10 +53,10 @@ class KelasController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Kelas $kelas)
+    public function edit(Kelas $kelas) // Sesuaikan nama variabel jika berbeda
     {
-        $prodis = Prodi::all();
-        return view('kelas.edit', compact('kelas', 'prodis'));
+        $prodis = Prodi::orderBy('nama')->get(); // Ambil semua prodi untuk dropdown
+        return view('kelas.edit', compact('kela', 'prodis'));
     }
 
     /**

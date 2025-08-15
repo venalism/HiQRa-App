@@ -21,7 +21,7 @@ class ProdiController extends Controller
      */
     public function create()
     {
-        //
+        return view('prodi.create');
     }
 
     /**
@@ -29,13 +29,9 @@ class ProdiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255|unique:prodis,nama',
-        ]);
-
+        $request->validate(['nama' => 'required|string|max:255|unique:prodi,nama']);
         Prodi::create($request->all());
-
-        return back()->with('success', 'Prodi berhasil ditambahkan.');
+        return redirect()->route('master.akademik')->with('success', 'Prodi baru berhasil ditambahkan.');
     }
 
     /**
@@ -49,9 +45,9 @@ class ProdiController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Prodi $prodi)
     {
-        //
+        return view('prodi.edit', compact('prodi'));
     }
 
     /**
@@ -59,13 +55,9 @@ class ProdiController extends Controller
      */
     public function update(Request $request, Prodi $prodi)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255|unique:prodis,nama,' . $prodi->id,
-        ]);
-
+        $request->validate(['nama' => 'required|string|max:255|unique:prodi,nama,' . $prodi->id]);
         $prodi->update($request->all());
-
-        return redirect()->route('prodi.index')->with('success', 'Prodi berhasil diperbarui.');
+        return redirect()->route('master.akademik')->with('success', 'Prodi berhasil diperbarui.');
     }
 
     /**
@@ -74,6 +66,6 @@ class ProdiController extends Controller
     public function destroy(Prodi $prodi)
     {
         $prodi->delete();
-        return back()->with('success', 'Prodi berhasil dihapus.');
+        return redirect()->route('master.akademik')->with('success', 'Prodi berhasil dihapus.');
     }
 }

@@ -76,19 +76,19 @@
 
                     <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Manajemen</h3>
                     <a href="{{ route('riwayat.peserta') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi Peserta</a>
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi
+                        Peserta</a>
                     <a href="{{ route('riwayat.panitia') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi Panitia</a>
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Absensi
+                        Panitia</a>
 
                     <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase tracking-wider">Master Data</h3>
-                    <a href="{{ route('prodi.index') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Prodi</a>
-                    <a href="{{ route('kelas.index') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Kelas</a>
-                    <a href="{{ route('jabatan.index') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan</a>
-                    <a href="{{ route('divisi.index') }}"
-                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Divisi</a>
+                    <a href="{{ route('master.akademik') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Prodi &
+                        Kelas</a>
+                    <a href="{{ route('master.organisasi') }}"
+                        class="flex items-center py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Jabatan &
+                        Divisi</a>
                 </nav>
             </aside>
         @endif

@@ -12,6 +12,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\RiwayatAbsensiController;
+use App\Http\Controllers\MasterDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,15 +64,15 @@ Route::middleware(['auth'])->group(function () {
             'panitia' => 'panitia'
         ]);
 
-        // CRUD Routes for Kegiatan
-        Route::resource('kegiatan', KegiatanController::class);
-        // CRUD Routes for Jabatan
-        Route::resource('jabatan', JabatanController::class)->except(['create', 'show', 'edit']);
-        // CRUD Routes for Divisi
-        Route::resource('divisi', DivisiController::class)->except(['create', 'show', 'edit']);
-        // CRUD Routes for Prodi
-        Route::resource('prodi', ProdiController::class)->except(['create', 'show', 'edit']);
-        Route::resource('kelas', KelasController::class)->except(['create', 'show', 'edit']);
+        // Route untuk menampilkan halaman gabungan
+        Route::get('/master/akademik', [MasterDataController::class, 'akademik'])->name('master.akademik');
+        Route::get('/master/organisasi', [MasterDataController::class, 'organisasi'])->name('master.organisasi');
+
+        // Route resource penuh untuk setiap model
+        Route::resource('prodi', ProdiController::class);
+        Route::resource('kelas', KelasController::class);
+        Route::resource('jabatan', JabatanController::class);
+        Route::resource('divisi', DivisiController::class);
     });
 
     // Publicly accessible QR Code for participants
