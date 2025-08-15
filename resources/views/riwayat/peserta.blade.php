@@ -64,7 +64,9 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Peserta</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Absen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -74,7 +76,7 @@
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $item->peserta->nama ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->kegiatan->nama_kegiatan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('d F Y, H:i:s') }}</td>
-                                        {{-- --- PERBAIKAN TAMPILAN STATUS --- --}}
+                                        <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4">
                                             @if($item->status == 'hadir')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Hadir</span>
@@ -86,7 +88,20 @@
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ ucfirst($item->status) }}</span>
                                             @endif
                                         </td>
-                                        {{-- --- AKHIR PERBAIKAN --- --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            {{-- TOMBOL EDIT & HAPUS BARU --}}
+                                            <button 
+                                                class="text-indigo-600 hover:text-indigo-900"
+                                                onclick="openEditModal({{ $item->id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                Edit
+                                            </button>
+                                            <span class="text-gray-300 mx-1">|</span>
+                                            <button 
+                                                class="text-red-600 hover:text-red-900"
+                                                onclick="openDeleteModal({{ $item->id }})">
+                                                Hapus
+                                            </button>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data.</td></tr>
@@ -122,6 +137,7 @@
                         </div>
                         <div>
                             <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
+                            {{-- Ubah name, id, dan error key menjadi 'kegiatan_id' --}}
                             <select name="kegiatan_id" id="kegiatan_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Kegiatan --</option>
                                 @foreach($kegiatan as $k)
@@ -144,6 +160,51 @@
                         {{-- TOMBOL BATAL DIBERI ID BARU --}}
                         <button type="button" id="closeModalBtn" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- MODAL UNTUK EDIT RIWAYAT --}}
+        <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Riwayat Absensi</h3>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="space-y-4">
+                        <div>
+                            <label for="edit_status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" id="edit_status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="hadir">Hadir</option>
+                                <option value="izin">Izin</option>
+                                <option value="tidak_hadir">Sakit</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_keterangan" class="block text-sm font-medium text-gray-700">Keterangan (Opsional)</label>
+                            <textarea name="keterangan" id="edit_keterangan" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- MODAL UNTUK KONFIRMASI HAPUS --}}
+        <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                <h3 class="text-lg font-medium text-gray-900">Konfirmasi Hapus</h3>
+                <p class="mt-2 text-sm text-gray-600">Apakah Anda yakin ingin menghapus riwayat absensi ini? Tindakan ini tidak dapat dibatalkan.</p>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-red-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-red-500">Ya, Hapus</button>
                     </div>
                 </form>
             </div>
@@ -200,6 +261,40 @@
         @if ($errors->any())
             openModal();
         @endif
+
+         const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const editStatus = document.getElementById('edit_status');
+        const editKeterangan = document.getElementById('edit_keterangan');
+
+        window.openEditModal = function(id, status, keterangan) {
+            // Set action URL form dengan ID yang benar
+            editForm.action = `/riwayat-absensi/${id}`;
+            // Set nilai awal di form
+            editStatus.value = status;
+            editKeterangan.value = keterangan;
+            // Tampilkan modal
+            editModal.classList.remove('hidden');
+        }
+
+        window.closeEditModal = function() {
+            editModal.classList.add('hidden');
+        }
+
+        // === Logika BARU untuk Modal Hapus ===
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
+
+        window.openDeleteModal = function(id) {
+            // Set action URL form dengan ID yang benar
+            deleteForm.action = `/riwayat-absensi/${id}`;
+            // Tampilkan modal
+            deleteModal.classList.remove('hidden');
+        }
+
+        window.closeDeleteModal = function() {
+            deleteModal.classList.add('hidden');
+        }
     });
 </script>
 @endpush

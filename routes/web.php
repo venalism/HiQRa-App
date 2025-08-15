@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/riwayat-absensi/peserta', [RiwayatAbsensiController::class, 'riwayatPeserta'])->name('riwayat.peserta');
     Route::get('/riwayat-absensi/panitia', [RiwayatAbsensiController::class, 'riwayatPanitia'])->name('riwayat.panitia');
     Route::post('/riwayat-absensi/manual', [RiwayatAbsensiController::class, 'storeManual'])->name('riwayat.manual.store');
+    Route::put('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'update'])->name('admin.riwayat.update');
+    Route::delete('/riwayat-absensi/{absensi}', [RiwayatAbsensiController::class, 'destroy'])->name('admin.riwayat.destroy');
 
     // Admin-only routes
     Route::middleware(['admin'])->group(function () {

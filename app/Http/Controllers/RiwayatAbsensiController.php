@@ -8,6 +8,7 @@ use App\Models\Absensi;
 use App\Models\Kegiatan;
 use App\Models\Peserta;
 use App\Models\Panitia;
+use Illuminate\Support\Facades\Auth;
 
 class RiwayatAbsensiController extends Controller
 {
@@ -63,7 +64,7 @@ class RiwayatAbsensiController extends Controller
     {
         // Di view, nama inputnya adalah 'id_kegiatan', jadi kita ganti nama variabelnya agar tidak bingung
         $validated = $request->validate([
-            'kegiatan_id' => 'required|exists:kegiatan,id',
+            'kegiatan_id' => 'required|exists:kegiatan,id', // Sesuaikan nama tabel ke 'kegiatan'
             'status' => 'required|in:izin,tidak_hadir',
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
@@ -71,8 +72,7 @@ class RiwayatAbsensiController extends Controller
         ]);
 
         // Cek duplikasi absensi
-        // --- PERBAIKAN DI SINI ---
-        $isDuplicate = Absensi::where('kegiatan_id', $request->id_kegiatan) // Menggunakan 'kegiatan_id'
+        $isDuplicate = Absensi::where('kegiatan_id', $request->id_kegiatan)
             ->where(function ($query) use ($request) {
                 if ($request->tipe == 'peserta') {
                     $query->where('peserta_id', $request->peserta_id);
@@ -85,15 +85,40 @@ class RiwayatAbsensiController extends Controller
             return back()->with('error', 'Gagal! Orang ini sudah terdata absensinya di kegiatan tersebut.');
         }
 
-        // Simpan data
-        Absensi::create([
-            'id_kegiatan' => $validated['kegiatan_id'], // Mapping dari input form ke kolom database
-            'status' => $validated['status'],
-            'peserta_id' => $validated['peserta_id'] ?? null,
-            'panitia_id' => $validated['panitia_id'] ?? null,
-        ]);
-        // --- AKHIR PERBAIKAN ---
+        $dataToSave = $validated;
+        
+        // 2. Tambahkan field-field wajib lainnya
+        $dataToSave['user_id'] = Auth::id();
+        $dataToSave['metode'] = 'manual';
+        $dataToSave['waktu_hadir'] = now();
+
+        // Hapus 'tipe' karena tidak ada di tabel absensi
+        unset($dataToSave['tipe']);
+
+        Absensi::create($dataToSave);
 
         return back()->with('success', 'Absensi manual berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Absensi $absensi)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:hadir,izin,tidak_hadir',
+            'keterangan' => 'nullable|string|max:255',
+        ]);
+
+        $absensi->update($validated);
+
+        return back()->with('success', 'Riwayat absensi berhasil diperbarui.');
+    }
+
+    public function destroy(Absensi $absensi)
+    {
+        try {
+            $absensi->delete();
+            return back()->with('success', 'Riwayat absensi berhasil dihapus.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menghapus data.');
+        }
     }
 }

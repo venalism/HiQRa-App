@@ -13,11 +13,12 @@ class Absensi extends Model
 
     protected $fillable = [
         'peserta_id',
+        'panitia_id',
         'kegiatan_id',
         'user_id',
-        'waktu_hadir',
-        'metode',
         'status',
+        'metode',
+        'waktu_hadir',
         'keterangan',
     ];
 

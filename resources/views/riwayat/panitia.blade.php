@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('header')
-     📋 Absensi Peserta
+     📋 Absensi Panitia
 @endsection
 
 @section('content')
-    <div class="py-12" x-data="{ isModalOpen: false }">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if(session('success'))
@@ -23,13 +23,13 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Data Riwayat</h3>
-                        <button @click="isModalOpen = true" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none">
                             Tambah Manual
                         </button>
                     </div>
 
                     <form method="GET" action="{{ route('riwayat.panitia') }}" class="mb-6">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Filter Kegiatan</label>
                                 <select name="kegiatan_id" id="kegiatan_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -42,10 +42,10 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="search" class="block text-sm font-medium text-gray-700">Cari Nama Panitia</label>
-                                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan nama...">
+                                <label for="search" class="block text-sm font-medium text-gray-700">Cari Nama</label>
+                                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan nama">
                             </div>
-                             <div class="flex items-end">
+                            <div class="flex items-end">
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     Cari
                                 </button>
@@ -61,10 +61,12 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Peserta</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Panitia</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Absen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -74,7 +76,7 @@
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $item->panitia->nama ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->kegiatan->nama_kegiatan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('d F Y, H:i:s') }}</td>
-                                        {{-- --- PERBAIKAN TAMPILAN STATUS --- --}}
+                                        <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4">
                                             @if($item->status == 'hadir')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Hadir</span>
@@ -86,7 +88,20 @@
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ ucfirst($item->status) }}</span>
                                             @endif
                                         </td>
-                                        {{-- --- AKHIR PERBAIKAN --- --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            {{-- TOMBOL EDIT & HAPUS BARU --}}
+                                            <button 
+                                                class="text-indigo-600 hover:text-indigo-900"
+                                                onclick="openEditModal({{ $item->id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                Edit
+                                            </button>
+                                            <span class="text-gray-300 mx-1">|</span>
+                                            <button 
+                                                class="text-red-600 hover:text-red-900"
+                                                onclick="openDeleteModal({{ $item->id }})">
+                                                Hapus
+                                            </button>
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data.</td></tr>
@@ -99,48 +114,187 @@
             </div>
         </div>
 
-        {{-- MODAL --}}
-        <div x-show="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;">
-            <div @click.away="isModalOpen = false" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+        {{-- MODAL DIBERI ID BARU DAN KELAS 'hidden' --}}
+        <div id="manualAttendanceModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div id="modalContent" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Absensi Manual</h3>
                 <form action="{{ route('riwayat.manual.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="tipe" value="panitia">
                     <div class="space-y-4">
-                        <div>
+                        {{-- Form input dengan error handling (tidak berubah) --}}
+                         <div>
                             <label for="panitia_id" class="block text-sm font-medium text-gray-700">Pilih Panitia</label>
-                            <select name="panitia_id" id="panitia_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <select name="panitia_id" id="panitia_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('panitia_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Panitia --</option>
                                 @foreach($panitia as $p)
-                                    <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                                    <option value="{{ $p->id }}" {{ old('panitia_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
                                 @endforeach
                             </select>
+                            @error('panitia_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
-                            <label for="id_kegiatan" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
-                            <select name="id_kegiatan" id="id_kegiatan" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
+                            {{-- Ubah name, id, dan error key menjadi 'kegiatan_id' --}}
+                            <select name="kegiatan_id" id="kegiatan_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Kegiatan --</option>
                                 @foreach($kegiatan as $k)
-                                    <option value="{{ $k->id }}">{{ $k->nama_kegiatan }}</option>
+                                    <option value="{{ $k->id }}" {{ old('kegiatan_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kegiatan }}</option>
                                 @endforeach
                             </select>
+                            @error('kegiatan_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        {{-- --- PERBAIKAN OPSI STATUS --- --}}
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="izin">Izin</option>
-                                <option value="tidak_hadir">Sakit</option>
+                                <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
+                                <option value="tidak_hadir" {{ old('status') == 'tidak_hadir' ? 'selected' : '' }}>Sakit</option>
                             </select>
                         </div>
-                        {{-- --- AKHIR PERBAIKAN --- --}}
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
-                        <button type="button" @click="isModalOpen = false" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        {{-- TOMBOL BATAL DIBERI ID BARU --}}
+                        <button type="button" id="closeModalBtn" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    {{-- MODAL UNTUK EDIT RIWAYAT --}}
+        <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Riwayat Absensi</h3>
+                <form id="editForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="space-y-4">
+                        <div>
+                            <label for="edit_status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" id="edit_status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="hadir">Hadir</option>
+                                <option value="izin">Izin</option>
+                                <option value="tidak_hadir">Sakit</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_keterangan" class="block text-sm font-medium text-gray-700">Keterangan (Opsional)</label>
+                            <textarea name="keterangan" id="edit_keterangan" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- MODAL UNTUK KONFIRMASI HAPUS --}}
+        <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+                <h3 class="text-lg font-medium text-gray-900">Konfirmasi Hapus</h3>
+                <p class="mt-2 text-sm text-gray-600">Apakah Anda yakin ingin menghapus riwayat absensi ini? Tindakan ini tidak dapat dibatalkan.</p>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-red-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-red-500">Ya, Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Pastikan script berjalan setelah seluruh halaman dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // Ambil elemen-elemen yang kita butuhkan dari halaman
+        const modal = document.getElementById('manualAttendanceModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const modalContent = document.getElementById('modalContent');
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+        
+        // Tambahkan event listener ke tombol buka
+        if (openBtn) {
+            openBtn.addEventListener('click', openModal);
+        }
+
+        // Tambahkan event listener ke tombol tutup (cancel)
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Tambahkan event listener untuk menutup modal jika klik di luar area kontennya
+        if (modal) {
+            modal.addEventListener('click', function (event) {
+                // Cek apakah yang diklik adalah area latar belakang modal, bukan kontennya
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+        
+        // Cek jika ada error validasi dari server, maka buka modal secara otomatis
+        @if ($errors->any())
+            openModal();
+        @endif
+
+         const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const editStatus = document.getElementById('edit_status');
+        const editKeterangan = document.getElementById('edit_keterangan');
+
+        window.openEditModal = function(id, status, keterangan) {
+            // Set action URL form dengan ID yang benar
+            editForm.action = `/riwayat-absensi/${id}`;
+            // Set nilai awal di form
+            editStatus.value = status;
+            editKeterangan.value = keterangan;
+            // Tampilkan modal
+            editModal.classList.remove('hidden');
+        }
+
+        window.closeEditModal = function() {
+            editModal.classList.add('hidden');
+        }
+
+        // === Logika BARU untuk Modal Hapus ===
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
+
+        window.openDeleteModal = function(id) {
+            // Set action URL form dengan ID yang benar
+            deleteForm.action = `/riwayat-absensi/${id}`;
+            // Tampilkan modal
+            deleteModal.classList.remove('hidden');
+        }
+
+        window.closeDeleteModal = function() {
+            deleteModal.classList.add('hidden');
+        }
+    });
+</script>
+@endpush
