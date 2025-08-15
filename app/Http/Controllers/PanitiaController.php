@@ -7,6 +7,8 @@ use App\Models\Divisi;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Imports\PanitiaWithRelationsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class PanitiaController extends Controller
@@ -72,5 +74,19 @@ class PanitiaController extends Controller
 
         // Logic untuk menampilkan halaman QR Code bisa ditambahkan di sini
         return view('panitia.qr', compact('panitia'));
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new PanitiaWithRelationsImport, $request->file('file'));
+            return back()->with('success', 'Data panitia berhasil diimpor!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            return back()->with('error', 'Gagal mengimpor data. Periksa kembali isi file Excel Anda.');
+        }
     }
 }

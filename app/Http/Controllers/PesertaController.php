@@ -6,6 +6,8 @@ use App\Models\Peserta;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Imports\PesertaWithRelationsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class PesertaController extends Controller
@@ -71,5 +73,20 @@ class PesertaController extends Controller
 
         // Logic untuk menampilkan halaman QR Code bisa ditambahkan di sini
         return view('peserta.qr', compact('peserta'));
+    }
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            Excel::import(new PesertaWithRelationsImport, $request->file('file'));
+            return back()->with('success', 'Data peserta berhasil diimpor!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            // Tangani error validasi dari file Excel
+            return back()->with('error', 'Gagal mengimpor data. Periksa kembali isi file Excel Anda.');
+        }
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\RiwayatAbsensiController;
 use App\Http\Controllers\MasterDataController;
+use App\Http\Controllers\ImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/scan', [AbsensiController::class, 'store'])->name('absensi.store');
         Route::get('/riwayat-absensi/peserta/export', [RiwayatAbsensiController::class, 'exportPesertaExcel'])->name('riwayat.peserta.export');
         Route::get('/riwayat-absensi/panitia/export', [RiwayatAbsensiController::class, 'exportPanitiaExcel'])->name('riwayat.panitia.export');
+        Route::get('/import', [ImportController::class, 'index'])->name('import.index');
+        Route::post('/import', [ImportController::class, 'store'])->name('import.store');
+        Route::get('/import/template/{type}', [ImportController::class, 'downloadTemplate'])->name('import.template');
 
         // CRUD Routes for Peserta
         Route::resource('peserta', PesertaController::class)->parameters([

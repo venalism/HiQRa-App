@@ -1,10 +1,9 @@
 @extends('layouts.app')
 
 @section('header')
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-        Prodi & Kelas
-    </h2>
+    🎯 Manajemen Akademik
 @endsection
+
 
 @section('content')
     <div class="py-12">
@@ -27,7 +26,7 @@
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                
+
                 {{-- Kolom Kiri: Manajemen Prodi --}}
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
