@@ -17,9 +17,11 @@ class RiwayatAbsensiController extends Controller
         $peserta = Peserta::orderBy('nama', 'asc')->get();
         $query = Absensi::with(['peserta', 'kegiatan'])->whereNotNull('peserta_id')->latest();
 
+        // --- PERBAIKAN DI SINI ---
         if ($request->filled('kegiatan_id')) {
-            $query->where('kegiatan_id', $request->kegiatan_id);
+            $query->where('kegiatan_id', $request->kegiatan_id); // Kembali menggunakan 'kegiatan_id'
         }
+        // --- AKHIR PERBAIKAN ---
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -39,9 +41,11 @@ class RiwayatAbsensiController extends Controller
         $panitia = Panitia::orderBy('nama', 'asc')->get();
         $query = Absensi::with(['panitia.divisi', 'kegiatan'])->whereNotNull('panitia_id')->latest();
 
+        // --- PERBAIKAN DI SINI ---
         if ($request->filled('kegiatan_id')) {
-            $query->where('kegiatan_id', $request->kegiatan_id);
+            $query->where('kegiatan_id', $request->kegiatan_id); // Kembali menggunakan 'kegiatan_id'
         }
+        // --- AKHIR PERBAIKAN ---
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -55,22 +59,20 @@ class RiwayatAbsensiController extends Controller
         return view('riwayat.panitia', compact('riwayat', 'kegiatan', 'panitia'));
     }
 
-    /**
-     * Menyimpan absensi manual.
-     */
     public function storeManual(Request $request)
     {
-        // --- PERBAIKAN VALIDASI STATUS ---
-        $request->validate([
+        // Di view, nama inputnya adalah 'id_kegiatan', jadi kita ganti nama variabelnya agar tidak bingung
+        $validated = $request->validate([
             'kegiatan_id' => 'required|exists:kegiatan,id',
-            'status' => 'required|in:izin,tidak_hadir', // Menggunakan enum yang benar
+            'status' => 'required|in:izin,tidak_hadir',
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
             'panitia_id' => 'required_if:tipe,panitia|exists:panitia,id',
         ]);
-        // --- AKHIR PERBAIKAN ---
 
-        $isDuplicate = Absensi::where('kegiatan_id', $request->kegiatan_id)
+        // Cek duplikasi absensi
+        // --- PERBAIKAN DI SINI ---
+        $isDuplicate = Absensi::where('kegiatan_id', $request->id_kegiatan) // Menggunakan 'kegiatan_id'
             ->where(function ($query) use ($request) {
                 if ($request->tipe == 'peserta') {
                     $query->where('peserta_id', $request->peserta_id);
@@ -83,7 +85,14 @@ class RiwayatAbsensiController extends Controller
             return back()->with('error', 'Gagal! Orang ini sudah terdata absensinya di kegiatan tersebut.');
         }
 
-        Absensi::create($request->all());
+        // Simpan data
+        Absensi::create([
+            'id_kegiatan' => $validated['kegiatan_id'], // Mapping dari input form ke kolom database
+            'status' => $validated['status'],
+            'peserta_id' => $validated['peserta_id'] ?? null,
+            'panitia_id' => $validated['panitia_id'] ?? null,
+        ]);
+        // --- AKHIR PERBAIKAN ---
 
         return back()->with('success', 'Absensi manual berhasil ditambahkan.');
     }

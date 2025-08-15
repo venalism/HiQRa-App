@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="py-12" x-data="{ isModalOpen: false }">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if(session('success'))
@@ -23,7 +23,7 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Data Riwayat</h3>
-                        <button @click="isModalOpen = true" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:outline-none">
                             Tambah Manual
                         </button>
                     </div>
@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 <label for="search" class="block text-sm font-medium text-gray-700">Cari Nama</label>
-                                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan nama atau NIM...">
+                                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan nama">
                             </div>
                             <div class="flex items-end">
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -99,44 +99,50 @@
             </div>
         </div>
 
-        {{-- MODAL --}}
-        <div x-show="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" style="display: none;">
-            <div @click.away="isModalOpen = false" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
+        {{-- MODAL DIBERI ID BARU DAN KELAS 'hidden' --}}
+        <div id="manualAttendanceModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div id="modalContent" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Absensi Manual</h3>
                 <form action="{{ route('riwayat.manual.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="tipe" value="peserta">
                     <div class="space-y-4">
-                        <div>
+                        {{-- Form input dengan error handling (tidak berubah) --}}
+                         <div>
                             <label for="peserta_id" class="block text-sm font-medium text-gray-700">Pilih Peserta</label>
-                            <select name="peserta_id" id="peserta_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <select name="peserta_id" id="peserta_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('peserta_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Peserta --</option>
                                 @foreach($peserta as $p)
-                                    <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                                    <option value="{{ $p->id }}" {{ old('peserta_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
                                 @endforeach
                             </select>
+                            @error('peserta_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
-                            <label for="id_kegiatan" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
-                            <select name="id_kegiatan" id="id_kegiatan" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
+                            <select name="kegiatan_id" id="kegiatan_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Kegiatan --</option>
                                 @foreach($kegiatan as $k)
-                                    <option value="{{ $k->id }}">{{ $k->nama_kegiatan }}</option>
+                                    <option value="{{ $k->id }}" {{ old('kegiatan_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kegiatan }}</option>
                                 @endforeach
                             </select>
+                            @error('kegiatan_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        {{-- --- PERBAIKAN OPSI STATUS --- --}}
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="izin">Izin</option>
-                                <option value="tidak_hadir">Sakit</option>
+                                <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
+                                <option value="tidak_hadir" {{ old('status') == 'tidak_hadir' ? 'selected' : '' }}>Sakit</option>
                             </select>
                         </div>
-                        {{-- --- AKHIR PERBAIKAN --- --}}
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
-                        <button type="button" @click="isModalOpen = false" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
+                        {{-- TOMBOL BATAL DIBERI ID BARU --}}
+                        <button type="button" id="closeModalBtn" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan</button>
                     </div>
                 </form>
@@ -144,3 +150,56 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Pastikan script berjalan setelah seluruh halaman dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // Ambil elemen-elemen yang kita butuhkan dari halaman
+        const modal = document.getElementById('manualAttendanceModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const modalContent = document.getElementById('modalContent');
+
+        // Fungsi untuk membuka modal
+        function openModal() {
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+        
+        // Tambahkan event listener ke tombol buka
+        if (openBtn) {
+            openBtn.addEventListener('click', openModal);
+        }
+
+        // Tambahkan event listener ke tombol tutup (cancel)
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Tambahkan event listener untuk menutup modal jika klik di luar area kontennya
+        if (modal) {
+            modal.addEventListener('click', function (event) {
+                // Cek apakah yang diklik adalah area latar belakang modal, bukan kontennya
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+        
+        // Cek jika ada error validasi dari server, maka buka modal secara otomatis
+        @if ($errors->any())
+            openModal();
+        @endif
+    });
+</script>
+@endpush
