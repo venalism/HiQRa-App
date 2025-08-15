@@ -12,22 +12,28 @@ class JabatanController extends Controller
      */
     public function index()
     {
-        $jabatans = Jabatan::latest()->paginate(10);
-        return view('jabatan.index', compact('jabatans'));
+        return redirect()->route('master.organisasi');
+    }
+
+    public function create()
+    {
+        return view('jabatan.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255|unique:jabatans,nama',
-        ]);
-
+        $request->validate(['nama' => 'required|string|max:255|unique:jabatans,nama']);
         Jabatan::create($request->all());
 
-        return back()->with('success', 'Jabatan berhasil ditambahkan.');
+        return redirect()->route('master.organisasi')->with('success', 'Jabatan baru berhasil ditambahkan.');
+    }
+
+    public function edit(Jabatan $jabatan)
+    {
+        return view('jabatan.edit', compact('jabatan'));
     }
 
     /**
@@ -35,13 +41,10 @@ class JabatanController extends Controller
      */
     public function update(Request $request, Jabatan $jabatan)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255|unique:jabatans,nama,' . $jabatan->id,
-        ]);
-
+        $request->validate(['nama' => 'required|string|max:255|unique:jabatans,nama,' . $jabatan->id]);
         $jabatan->update($request->all());
 
-        return redirect()->route('jabatan.index')->with('success', 'Jabatan berhasil diperbarui.');
+        return redirect()->route('master.organisasi')->with('success', 'Jabatan berhasil diperbarui.');
     }
 
     /**
@@ -50,6 +53,6 @@ class JabatanController extends Controller
     public function destroy(Jabatan $jabatan)
     {
         $jabatan->delete();
-        return back()->with('success', 'Jabatan berhasil dihapus.');
+        return redirect()->route('master.organisasi')->with('success', 'Jabatan berhasil dihapus.');
     }
 }

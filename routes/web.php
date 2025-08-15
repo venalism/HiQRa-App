@@ -64,6 +64,8 @@ Route::middleware(['auth'])->group(function () {
             'panitia' => 'panitia'
         ]);
 
+        // CRUD Routes for Kegiatan
+        Route::resource('kegiatan', KegiatanController::class);
         // Route untuk menampilkan halaman gabungan
         Route::get('/master/akademik', [MasterDataController::class, 'akademik'])->name('master.akademik');
         Route::get('/master/organisasi', [MasterDataController::class, 'organisasi'])->name('master.organisasi');

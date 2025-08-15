@@ -29,7 +29,7 @@ class ProdiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(['nama' => 'required|string|max:255|unique:prodi,nama']);
+        $request->validate(['nama' => 'required|string|max:255|unique:prodis,nama']);
         Prodi::create($request->all());
         return redirect()->route('master.akademik')->with('success', 'Prodi baru berhasil ditambahkan.');
     }
@@ -55,7 +55,7 @@ class ProdiController extends Controller
      */
     public function update(Request $request, Prodi $prodi)
     {
-        $request->validate(['nama' => 'required|string|max:255|unique:prodi,nama,' . $prodi->id]);
+        $request->validate(['nama' => 'required|string|max:255|unique:prodis,nama,' . $prodi->id]);
         $prodi->update($request->all());
         return redirect()->route('master.akademik')->with('success', 'Prodi berhasil diperbarui.');
     }

@@ -13,24 +13,33 @@ class DivisiController extends Controller
      */
     public function index()
     {
-        $divisis = Divisi::with('jabatan')->latest()->paginate(10);
-        $jabatans = Jabatan::all();
-        return view('divisi.index', compact('divisis', 'jabatans'));
+        return redirect()->route('master.organisasi');
+    }
+
+    public function create()
+    {
+        $jabatans = Jabatan::orderBy('nama')->get();
+        return view('divisi.create', compact('jabatans'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:divisis,nama',
+            'nama' => 'required|string|max:255',
             'jabatan_id' => 'required|exists:jabatans,id',
         ]);
 
         Divisi::create($request->all());
+        return redirect()->route('master.organisasi')->with('success', 'Divisi baru berhasil ditambahkan.');
+    }
 
-        return back()->with('success', 'Divisi berhasil ditambahkan.');
+    public function edit(Divisi $divisi)
+    {
+        $jabatans = Jabatan::orderBy('nama')->get();
+        return view('divisi.edit', compact('divisi', 'jabatans'));
     }
 
     /**
@@ -39,13 +48,12 @@ class DivisiController extends Controller
     public function update(Request $request, Divisi $divisi)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:divisis,nama,' . $divisi->id,
+            'nama' => 'required|string|max:255',
             'jabatan_id' => 'required|exists:jabatans,id',
         ]);
-
         $divisi->update($request->all());
 
-        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil diperbarui.');
+        return redirect()->route('master.organisasi')->with('success', 'Divisi berhasil diperbarui.');
     }
 
     /**
@@ -54,6 +62,6 @@ class DivisiController extends Controller
     public function destroy(Divisi $divisi)
     {
         $divisi->delete();
-        return back()->with('success', 'Divisi berhasil dihapus.');
+        return redirect()->route('master.organisasi')->with('success', 'Divisi berhasil dihapus.');
     }
 }

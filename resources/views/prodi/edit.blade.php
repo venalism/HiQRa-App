@@ -19,10 +19,10 @@
                             <input type="text" name="nama" id="nama" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ $prodi->nama }}" required>
                         </div>
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('prodi.index') }}" class="text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">
-                                Simpan Perubahan
-                            </button>
+                            <div class="flex items-center justify-end mt-4">
+                            <a href="{{ route('master.akademik') }}" class="mr-4">Batal</a>
+                            <button type="submit">Simpan Perubahan</button>
+                        </div>
                         </div>
                     </form>
                 </div>

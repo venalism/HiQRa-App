@@ -13,9 +13,7 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelasList = Kelas::with('prodi')->latest()->paginate(10);
-        $prodis = Prodi::all();
-        return view('kelas.index', compact('kelasList', 'prodis'));
+        return redirect()->route('master.akademik');
     }
 
     /**
@@ -23,7 +21,7 @@ class KelasController extends Controller
      */
     public function create()
     {
-        $prodis = Prodi::orderBy('nama')->get(); // Ambil semua prodi untuk dropdown
+        $prodis = Prodi::orderBy('nama')->get();
         return view('kelas.create', compact('prodis'));
     }
 
@@ -33,13 +31,12 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:kelas,nama',
+            'nama' => 'required|string|max:255',
             'prodi_id' => 'required|exists:prodis,id',
         ]);
 
         Kelas::create($request->all());
-
-        return back()->with('success', 'Kelas berhasil ditambahkan.');
+        return redirect()->route('master.akademik')->with('success', 'Kelas baru berhasil ditambahkan.');
     }
 
     /**
@@ -62,24 +59,23 @@ class KelasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kelas $kelas)
+    public function update(Request $request, Kelas $kela)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:kelas,nama,' . $kelas->id,
+            'nama' => 'required|string|max:255',
             'prodi_id' => 'required|exists:prodis,id',
         ]);
 
-        $kelas->update($request->all());
-
-        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil diperbarui.');
+        $kela->update($request->all());
+        return redirect()->route('master.akademik')->with('success', 'Kelas berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kelas $kelas)
+    public function destroy(Kelas $kela)
     {
-        $kelas->delete();
-        return back()->with('success', 'Kelas berhasil dihapus.');
+        $kela->delete();
+        return redirect()->route('master.akademik')->with('success', 'Kelas berhasil dihapus.');
     }
 }
