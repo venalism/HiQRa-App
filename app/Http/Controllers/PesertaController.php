@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peserta;
+use App\Models\Prodi;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,10 +13,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PesertaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $peserta = Peserta::with(['kelas.prodi'])->paginate(10);
-        return view('peserta.index', compact('peserta'));
+        $prodis = Prodi::all();
+        $kelas = Kelas::all();
+
+        $query = Peserta::with(['prodi', 'kelas']);
+
+        // Filter berdasarkan Prodi
+        if ($request->filled('prodi_id')) {
+            $query->where('prodi_id', $request->prodi_id);
+        }
+
+        // Filter berdasarkan Kelas
+        if ($request->filled('kelas_id')) {
+            $query->where('kelas_id', $request->kelas_id);
+        }
+
+        $peserta = $query->paginate(10);
+
+        return view('peserta.index', compact('peserta', 'prodis', 'kelas'));
     }
 
     public function create()

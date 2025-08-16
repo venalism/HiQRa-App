@@ -13,10 +13,26 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PanitiaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $panitia = Panitia::with(['divisi.jabatan'])->paginate(10);
-        return view('panitia.index', compact('panitia'));
+        $jabatans = Jabatan::all();
+        $divisis = Divisi::all();
+
+        $query = Panitia::with(['jabatan', 'divisi']);
+
+        // Filter berdasarkan Jabatan
+        if ($request->filled('jabatan_id')) {
+            $query->where('jabatan_id', $request->jabatan_id);
+        }
+
+        // Filter berdasarkan Divisi
+        if ($request->filled('divisi_id')) {
+            $query->where('divisi_id', $request->divisi_id);
+        }
+
+        $panitia = $query->paginate(10);
+
+        return view('panitia.index', compact('panitia', 'jabatans', 'divisis'));
     }
 
     public function create()
