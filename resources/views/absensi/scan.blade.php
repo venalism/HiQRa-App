@@ -6,6 +6,20 @@
     📷 Scan QR Code Absensi
 @endsection
 
+<style>
+    .success {
+        color: green;
+    }
+
+    .error {
+        color: red;
+    }
+
+    .warning {
+        color: orange;
+    }
+</style>
+
 @section('content')
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="text-center mb-4 pb-4 border-b">
@@ -44,30 +58,43 @@
             resultContainer.className = 'loading';
 
             // Kirim data ke server
-            fetch('{{ route("absensi.store") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    barcode: decodedText,
-                    kegiatan_id: kegiatanId
+            fetch('{{ route('absensi.store') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        barcode: decodedText,
+                        kegiatan_id: kegiatanId
+                    })
                 })
-            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        resultContainer.innerHTML = `<span class="status-indicator status-success"></span>${data.message}`;
-                        resultContainer.className = 'success';
+                        if (data.status === "sudah") {
+                            resultContainer.innerHTML =
+                                `<span class="status-indicator status-warning"></span>${data.message}`;
+                            resultContainer.className = 'warning';
+                            new Audio("{{ asset('sounds/warning.mp3') }}").play();
+                        } else if (data.status === "baru") {
+                            resultContainer.innerHTML =
+                                `<span class="status-indicator status-success"></span>${data.message}`;
+                            resultContainer.className = 'success';
+                            new Audio("{{ asset('sounds/success2.mp3') }}").play();
+                        }
                     } else {
-                        resultContainer.innerHTML = `<span class="status-indicator status-error"></span>${data.message || 'Terjadi kesalahan.'}`;
+                        resultContainer.innerHTML =
+                            `<span class="status-indicator status-error"></span>${data.message || 'Terjadi kesalahan.'}`;
                         resultContainer.className = 'error';
+                        new Audio("{{ asset('sounds/error.mp3') }}").play();
                     }
                 })
+
                 .catch(error => {
                     console.error('Error:', error);
-                    resultContainer.innerHTML = `<span class="status-indicator status-error"></span>Error: Tidak dapat terhubung ke server.`;
+                    resultContainer.innerHTML =
+                        `<span class="status-indicator status-error"></span>Error: Tidak dapat terhubung ke server.`;
                     resultContainer.className = 'error';
                 })
                 .finally(() => {
@@ -85,13 +112,16 @@
         }
 
         const html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            {
+            "reader", {
                 fps: 10,
-                qrbox: { width: 250, height: 250 },
+                qrbox: {
+                    width: 250,
+                    height: 250
+                },
                 rememberLastUsedCamera: true
             },
-                    /* verbose= */ false);
+            /* verbose= */
+            false);
 
         html5QrcodeScanner.render(onScanSuccess, onScanError);
     </script>
