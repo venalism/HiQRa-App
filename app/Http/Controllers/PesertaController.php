@@ -50,7 +50,7 @@ class PesertaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:peserta,email,' . $id,
-            'no_hp' => 'required|string|max:15|unique:peserta,no_hp,',
+            'no_hp' => 'required|string|max:15|unique:peserta,no_hp,' . $id,
             'kelas_id' => 'nullable|exists:kelas,id',
         ]);
 

@@ -51,7 +51,7 @@ class PanitiaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:panitia,email,' . $id,
-            'no_hp' => 'required|string|max:15|unique:panitia,no_hp',
+            'no_hp' => 'required|string|max:15|unique:panitia,no_hp,' . $id,
             'divisi_id' => 'nullable|exists:divisis,id',
         ]);
 
