@@ -76,12 +76,12 @@
                             resultContainer.innerHTML =
                                 `<span class="status-indicator status-warning"></span>${data.message}`;
                             resultContainer.className = 'warning';
-                            new Audio("{{ asset('sounds/warning.mp3') }}").play();
+                            new Audio("{{ asset('sounds/success2.mp3') }}").play();
                         } else if (data.status === "baru") {
                             resultContainer.innerHTML =
                                 `<span class="status-indicator status-success"></span>${data.message}`;
                             resultContainer.className = 'success';
-                            new Audio("{{ asset('sounds/success2.mp3') }}").play();
+                            new Audio("{{ asset('sounds/success.mp3') }}").play();
                         }
                     } else {
                         resultContainer.innerHTML =
