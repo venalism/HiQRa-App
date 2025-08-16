@@ -41,13 +41,13 @@ class AbsensiController extends Controller
         $entity = null;
         $entityType = null;
 
-        // Cek barcode di tabel Peserta
+        // 🔎 Cek barcode di tabel Peserta
         $peserta = Peserta::where('barcode', $barcode)->first();
         if ($peserta) {
             $entity = $peserta;
             $entityType = 'peserta';
         } else {
-            // Jika tidak, cek di tabel Panitia
+            // 🔎 Jika tidak, cek di tabel Panitia
             $panitia = Panitia::where('barcode', $barcode)->first();
             if ($panitia) {
                 $entity = $panitia;
@@ -55,15 +55,16 @@ class AbsensiController extends Controller
             }
         }
 
-        // Jika barcode tidak ditemukan sama sekali
+        // ❌ Jika barcode tidak ditemukan sama sekali
         if (!$entity) {
             return response()->json([
                 'success' => false,
+                'status' => 'invalid',
                 'message' => 'Gagal! Barcode tidak valid atau tidak terdaftar.'
             ], 404);
         }
 
-        // Cek absensi ganda
+        // 🔎 Cek absensi ganda
         $existingAbsensi = Absensi::where('kegiatan_id', $kegiatanId)
             ->where(function ($query) use ($entity, $entityType) {
                 if ($entityType === 'peserta') {
@@ -76,34 +77,36 @@ class AbsensiController extends Controller
 
         if ($existingAbsensi) {
             return response()->json([
-                'success' => false,
-                'message' => 'Gagal! ' . $entity->nama . ' sudah melakukan absensi sebelumnya.'
-            ], 409);
+                'success' => true,
+                'status' => 'sudah',
+                'message' => 'Perhatian! ' . $entity->nama . ' sudah melakukan absensi sebelumnya.'
+            ], 200);
         }
 
-        // Menyiapkan data untuk disimpan
+        // 📌 Menyiapkan data untuk disimpan
         $dataToCreate = [
             'kegiatan_id' => $kegiatanId,
-            'user_id' => Auth::id(), // ID user (panitia) yang melakukan scan
+            'user_id' => Auth::id(), // ID panitia yang melakukan scan
             'waktu_hadir' => Carbon::now(),
             'metode' => 'barcode',
             'status' => 'hadir',
         ];
 
-        // Mengisi kolom yang sesuai berdasarkan tipe entitas
+        // 📌 Mengisi kolom yang sesuai berdasarkan tipe entitas
         if ($entityType === 'peserta') {
             $dataToCreate['peserta_id'] = $entity->id;
-            $dataToCreate['panitia_id'] = null; // Pastikan kolom lain null
-        } else { // Jika panitia
+            $dataToCreate['panitia_id'] = null; // kolom lain null
+        } else {
             $dataToCreate['panitia_id'] = $entity->id;
-            $dataToCreate['peserta_id'] = null; // Pastikan kolom lain null
+            $dataToCreate['peserta_id'] = null; // kolom lain null
         }
         
-        // Simpan data absensi
+        // 💾 Simpan data absensi
         $absensi = Absensi::create($dataToCreate);
 
         return response()->json([
             'success' => true,
+            'status' => 'baru',
             'message' => 'Berhasil! Kehadiran ' . $entity->nama . ' (' . ucfirst($entityType) . ') telah dicatat.',
             'data' => [
                 'nama' => $entity->nama,
