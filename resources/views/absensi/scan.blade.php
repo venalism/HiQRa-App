@@ -81,7 +81,7 @@
                             resultContainer.innerHTML =
                                 `<span class="status-indicator status-success"></span>${data.message}`;
                             resultContainer.className = 'success';
-                            new Audio("{{ asset('sounds/success.mp3') }}").play();
+                            new Audio("{{ asset('sounds/success7.mp3') }}").play();
                         }
                     } else {
                         resultContainer.innerHTML =
