@@ -156,6 +156,7 @@
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="hadir" {{ old('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
                                 <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
                                 <option value="tidak_hadir" {{ old('status') == 'tidak_hadir' ? 'selected' : '' }}>Sakit</option>
                             </select>
