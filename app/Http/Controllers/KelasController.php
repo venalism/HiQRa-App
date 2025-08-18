@@ -53,29 +53,29 @@ class KelasController extends Controller
     public function edit(Kelas $kelas) // Sesuaikan nama variabel jika berbeda
     {
         $prodis = Prodi::orderBy('nama')->get(); // Ambil semua prodi untuk dropdown
-        return view('kelas.edit', compact('kela', 'prodis'));
+        return view('kelas.edit', compact('kelas', 'prodis'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kelas $kela)
+    public function update(Request $request, Kelas $kelas)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'prodi_id' => 'required|exists:prodis,id',
         ]);
 
-        $kela->update($request->all());
+        $kelas->update($request->all());
         return redirect()->route('master.akademik')->with('success', 'Kelas berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kelas $kela)
+    public function destroy(Kelas $kelas)
     {
-        $kela->delete();
+        $kelas->delete();
         return redirect()->route('master.akademik')->with('success', 'Kelas berhasil dihapus.');
     }
 }
