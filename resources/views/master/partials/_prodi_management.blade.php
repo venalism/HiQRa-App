@@ -15,7 +15,7 @@
         <tbody class="bg-white divide-y divide-gray-200">
             @forelse ($prodis as $prodi)
                 <tr>
-                    < <td class="px-6 py-4">{{ $prodi->nama }}</td>
+                    <td class="px-6 py-4">{{ $prodi->nama }}</td>
                     <td class="px-6 py-4 text-sm font-medium">
                         <a href="{{ route('prodi.edit', $prodi->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                         <form action="{{ route('prodi.destroy', $prodi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus prodi ini?');">
