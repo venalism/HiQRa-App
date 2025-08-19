@@ -9,7 +9,9 @@ class PesertaTemplateExport implements WithHeadings
         return [
             'nama',
             'email',
+            'npm',
             'no_hp',
+            'password',
             'prodi',
             'kelas',
         ];

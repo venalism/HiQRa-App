@@ -31,7 +31,8 @@ class PanitiaAbsensiExport implements FromCollection, WithHeadings, WithMapping
         if ($this->request->filled('search')) {
             $searchTerm = $this->request->search;
             $query->whereHas('panitia', function ($q) use ($searchTerm) {
-                $q->where('nama', 'like', "%{$searchTerm}%");
+                $q->where('nama', 'like', "%{$searchTerm}%")
+                  ->orWhere('npm', 'like', "%{$searchTerm}%");
             });
         }
         
@@ -43,6 +44,7 @@ class PanitiaAbsensiExport implements FromCollection, WithHeadings, WithMapping
         return [
             'Nama Panitia',
             'Email',
+            'NPM',
             'No_hp',
             'Divisi',
             'Kegiatan',
@@ -58,6 +60,7 @@ class PanitiaAbsensiExport implements FromCollection, WithHeadings, WithMapping
         return [
             $absensi->panitia->nama ?? 'N/A',
             $absensi->panitia->email ?? 'N/A',
+            $absensi->panitia->npm ?? 'N/A',
             $absensi->panitia->no_hp ?? 'N/A',
             $absensi->panitia->divisi->nama ?? 'N/A',
             $absensi->kegiatan->nama_kegiatan ?? 'N/A',

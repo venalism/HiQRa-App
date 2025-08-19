@@ -32,7 +32,8 @@ class PesertaAbsensiExport implements FromCollection, WithHeadings, WithMapping
             $searchTerm = $this->request->search;
             $query->whereHas('peserta', function ($q) use ($searchTerm) {
                 $q->where('nama', 'like', "%{$searchTerm}%")
-                  ->orWhere('email', 'like', "%{$searchTerm}%");
+                  ->orWhere('email', 'like', "%{$searchTerm}%")
+                  ->orWhere('npm', 'like', "%{$searchTerm}%");
             });
         }
         
@@ -44,6 +45,7 @@ class PesertaAbsensiExport implements FromCollection, WithHeadings, WithMapping
         return [
             'Nama Peserta',
             'Email',
+            'NPM',
             'No_hp',
             'Kegiatan',
             'Status',
@@ -58,6 +60,7 @@ class PesertaAbsensiExport implements FromCollection, WithHeadings, WithMapping
         return [
             $absensi->peserta->nama ?? 'N/A',
             $absensi->peserta->email ?? 'N/A',
+            $absensi->peserta->npm ?? 'N/A',
             $absensi->peserta->no_hp ?? 'N/A',
             $absensi->kegiatan->nama_kegiatan ?? 'N/A',
             ucfirst(str_replace('_', ' ', $absensi->status)),

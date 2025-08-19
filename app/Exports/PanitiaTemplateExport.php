@@ -9,7 +9,9 @@ class PanitiaTemplateExport implements WithHeadings
         return [
             'nama',
             'email',
+            'npm',
             'no_hp',
+            'password',
             'jabatan',
             'divisi',
         ];
