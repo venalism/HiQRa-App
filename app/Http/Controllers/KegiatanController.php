@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kegiatan;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 
 class KegiatanController extends Controller
@@ -21,7 +22,8 @@ class KegiatanController extends Controller
      */
     public function create()
     {
-        return view('kegiatan.create');
+        $kelas = Kelas::all();
+        return view('kegiatan.create', compact('kelas'));
     }
 
     /**

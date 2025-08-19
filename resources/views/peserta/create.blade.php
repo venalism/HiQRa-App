@@ -39,6 +39,11 @@
                 </div>
 
                 <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" name="password" id="password" class="mt-1 block w-full" required>
+                </div>
+
+                <div class="mb-4">
                     <label for="no_hp" class="block text-sm font-medium text-gray-700">No. HP</label>
                     <input type="text" id="no_hp" name="no_hp" class="mt-1 form-input block w-full">
                 </div>

@@ -60,31 +60,35 @@
 
                     <!-- Target Prodi -->
                     <div>
-                        <label for="target_prodi" class="block text-sm font-medium text-gray-700 mb-1">Target Prodi</label>
-                        <input type="text" name="target_prodi" id="target_prodi" class="input-field"
-                            value="{{ old('target_prodi') }}">
+                        <label for="Kelas_id" class="block text-sm font-medium text-gray-700">Target Kelas dan Prodi</label>
+                    <select id="kelas_id" name="kelas_id" class="mt-1 form-select block w-full">
+                        <option value="">-- Pilih Kelas dan Prodi --</option>
+                        @foreach ($kelas as $d)
+                            <option value="{{ $d->id }}">{{ $d->prodi->nama }} - {{  $d->nama }}</option>
+                        @endforeach
+                    </select>
                     </div>
 
-                    <!-- Target Kelas -->
+                    {{-- <!-- Target Kelas -->
                     <div>
                         <label for="target_kelas" class="block text-sm font-medium text-gray-700 mb-1">Target Kelas</label>
                         <input type="text" name="target_kelas" id="target_kelas" class="input-field"
                             value="{{ old('target_kelas') }}">
-                    </div>
+                    </div> --}}
 
-                    <!-- Target Tingkat -->
+                    {{-- <!-- Target Tingkat -->
                     <div>
                         <label for="target_tingkat" class="block text-sm font-medium text-gray-700 mb-1">Target Tingkat</label>
                         <input type="text" name="target_tingkat" id="target_tingkat" class="input-field"
                             value="{{ old('target_tingkat') }}">
-                    </div>
+                    </div> --}}
 
-                    <!-- Target Jabatan -->
+                    {{-- <!-- Target Jabatan -->
                     <div>
                         <label for="target_jabatan" class="block text-sm font-medium text-gray-700 mb-1">Target Jabatan</label>
                         <input type="text" name="target_jabatan" id="target_jabatan" class="input-field"
                             value="{{ old('target_jabatan') }}">
-                    </div>
+                    </div> --}}
 
                     <!-- Deskripsi -->
                     <div class="md:col-span-2">
