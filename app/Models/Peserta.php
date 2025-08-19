@@ -50,12 +50,16 @@ class Peserta extends Model
     {
         return $this->belongsToMany(Kegiatan::class, 'absensi');
     }
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
-    }
+    // public function kelas()
+    // {
+    //     return $this->belongsTo(Kelas::class);
+    // }
     public function prodi()
     {
         return $this->belongsTo(Prodi::class);
+    }
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 }
