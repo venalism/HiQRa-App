@@ -18,11 +18,13 @@ class PesertaController extends Controller
         $prodis = Prodi::all();
         $kelas = Kelas::all();
 
-        $query = Peserta::with(['prodi', 'kelas']);
+        $query = Peserta::with(['kelas.prodi']);
 
-        // Filter berdasarkan Prodi
+        // Filter berdasarkan Prodi (via relasi kelas → prodi)
         if ($request->filled('prodi_id')) {
-            $query->where('prodi_id', $request->prodi_id);
+            $query->whereHas('kelas.prodi', function ($q) use ($request) {
+                $q->where('id', $request->prodi_id);
+            });
         }
 
         // Filter berdasarkan Kelas
@@ -34,6 +36,7 @@ class PesertaController extends Controller
 
         return view('peserta.index', compact('peserta', 'prodis', 'kelas'));
     }
+
 
     public function create()
     {
