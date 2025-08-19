@@ -76,7 +76,9 @@ Route::middleware(['auth'])->group(function () {
 
         // Route resource penuh untuk setiap model
         Route::resource('prodi', ProdiController::class);
-        Route::resource('kelas', KelasController::class);
+        Route::resource('kelas', KelasController::class)->parameters([
+            'kelas' => 'kelas'
+        ]);;
         Route::resource('jabatan', JabatanController::class);
         Route::resource('divisi', DivisiController::class);
     });
