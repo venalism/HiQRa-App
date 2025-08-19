@@ -54,6 +54,12 @@
                         </select>
                     </div>
 
+                    {{-- Password --}}
+                    <div class="mb-4">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password (Kosongkan jika tidak diubah)</label>
+                        <input type="password" name="password" id="password" class="mt-1 block w-full">
+                    </div>
+
                     {{-- Tombol --}}
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('panitia.index') }}" class="btn btn-secondary me-2">Batal</a>
