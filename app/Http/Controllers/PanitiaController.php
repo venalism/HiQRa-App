@@ -18,11 +18,13 @@ class PanitiaController extends Controller
         $jabatans = Jabatan::all();
         $divisis = Divisi::all();
 
-        $query = Panitia::with(['jabatan', 'divisi']);
+        $query = Panitia::with(['divisi.jabatan']);
 
-        // Filter berdasarkan Jabatan
+        // Filter berdasarkan Prodi (via relasi divisi → jabatan)
         if ($request->filled('jabatan_id')) {
-            $query->where('jabatan_id', $request->jabatan_id);
+            $query->whereHas('divisi.jabatan', function ($q) use ($request) {
+                $q->where('id', $request->jabatan_id);
+            });
         }
 
         // Filter berdasarkan Divisi
