@@ -15,8 +15,18 @@ class Panitia extends Model
 {
     use HasFactory;
 
-    protected $table = 'panitia'; // Pastikan sesuai dengan nama tabel
-    protected $fillable = ['nama', 'email', 'no_hp', 'divisi_id','barcode'];
+    protected $table = 'panitia';
+    
+    protected $fillable = [
+        'nama', 
+        'email', 
+        'npm', 
+        'password',
+        'no_hp', 
+        'divisi_id',
+        'barcode'
+    ];
+
     /**
      * Get the user that owns the Panitia
      *

@@ -80,6 +80,8 @@
                             </th>
                             <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
                             </th>
+                            <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM
+                            </th>
                             <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.
                                 HP</th>
                             <th class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prodi
@@ -95,9 +97,11 @@
                             <tr>
                                 <td class="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap">{{ $p->nama }}</td>
                                 <td class="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">{{ $p->email }}</td>
+                                <td class="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">{{ $p->npm }}</td>
                                 <td class="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">{{ $p->no_hp }}</td>
                                 <td class="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ $p->kelas->prodi->nama ?? '-' }}</td>
+                                    {{ $p->kelas->prodi->nama ?? '-' }}
+                                </td>
                                 <td class="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">{{ $p->kelas->nama ?? '-' }}</td>
                                 <td class="py-4 px-6 text-sm text-center whitespace-nowrap">
                                     <div class="flex justify-center items-center gap-2">

@@ -67,6 +67,7 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Panitia</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kegiatan</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Absen</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
@@ -79,6 +80,7 @@
                                     <tr>
                                         <td class="px-6 py-4">{{ $loop->iteration + $riwayat->firstItem() - 1 }}</td>
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $item->panitia->nama ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->panitia->npm }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->kegiatan->nama_kegiatan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('d F Y, H:i:s') }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
@@ -133,7 +135,7 @@
                             <select name="panitia_id" id="panitia_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('panitia_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Panitia --</option>
                                 @foreach($panitia as $p)
-                                    <option value="{{ $p->id }}" {{ old('panitia_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }}</option>
+                                    <option value="{{ $p->id }}" {{ old('panitia_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }} ({{ $p->npm }})</option>
                                 @endforeach
                             </select>
                             @error('panitia_id')

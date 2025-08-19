@@ -7,6 +7,7 @@ use App\Models\Divisi;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use App\Imports\PanitiaWithRelationsImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -43,23 +44,35 @@ class PanitiaController extends Controller
         return view('panitia.create', compact('divisi'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:panitia',
-             'no_hp' => 'required|string|max:15|unique:panitia,no_hp',
-            'divisi_id' => 'nullable|exists:divisis,id',
-        ]);
-        Panitia::create($request->all() + ['barcode' => (string) Str::uuid()]);
-        return redirect()->route('panitia.index')->with('success', 'Data panitia berhasil ditambahkan.');
-    }
-
     public function edit($id)
     {
         $panitia = Panitia::findOrFail($id);
         $divisis = Divisi::all();
         return view('panitia.edit', compact('panitia', 'divisis'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:panitia,email',
+            'npm' => 'required|string|unique:panitia,npm', // Tambahkan validasi
+            'password' => 'required|string|min:8', // Tambahkan validasi
+            'no_hp' => 'nullable|string',
+            'divisi_id' => 'required|exists:divisis,id',
+        ]);
+
+        Panitia::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'npm' => $request->npm,
+            'password' => Hash::make($request->password), // Hash password
+            'no_hp' => $request->no_hp,
+            'barcode' => Str::uuid(),
+            'divisi_id' => $request->divisi_id,
+        ]);
+
+        return redirect()->route('panitia.index')->with('success', 'Panitia berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id)
@@ -68,15 +81,23 @@ class PanitiaController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:panitia,email,' . $id,
-            'no_hp' => 'required|string|max:15|unique:panitia,no_hp,' . $id,
-            'divisi_id' => 'nullable|exists:divisis,id',
+            'email' => 'required|email|unique:panitia,email,' . $id,
+            'npm' => 'required|string|unique:panitia,npm,' . $id,
+            'password' => 'nullable|string|min:8',
+            'no_hp' => 'nullable|string',
+            'divisi_id' => 'required|exists:divisis,id',
         ]);
 
-        $panitia->update($request->all());
+        $data = $request->except('password');
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $panitia->update($data);
 
         return redirect()->route('panitia.index')->with('success', 'Data panitia berhasil diperbarui.');
     }
+
 
     public function destroy($id)
     {
