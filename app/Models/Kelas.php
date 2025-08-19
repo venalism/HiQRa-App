@@ -14,12 +14,16 @@ class Kelas extends Model
 
     protected $fillable = ['nama', 'prodi_id'];
 
-    public function prodi()
-    {
-        return $this->belongsTo(Prodi::class);
-    }
-     public function peserta()
+    // public function prodi()
+    // {
+    //     return $this->belongsTo(Prodi::class);
+    // }
+    public function peserta()
     {
         return $this->hasMany(Peserta::class);
+    }
+    public function prodi()
+    {
+        return $this->belongsTo(Prodi::class, 'prodi_id');
     }
 }
