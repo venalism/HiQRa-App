@@ -29,7 +29,7 @@ class Panitia extends Model
 
     public function divisi()
     {
-        return $this->belongsTo(Divisi::class);
+        return $this->belongsTo(Divisi::class, 'divisi_id');
     }
     /**
      * Get all of the absensi for the Peserta
