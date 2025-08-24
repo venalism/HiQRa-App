@@ -26,14 +26,14 @@
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
                         <h3 class="text-lg font-medium">Data Riwayat</h3>
                         <div class="flex space-x-2">
-                             {{-- Tombol untuk mengekspor data ke Excel --}}
-                             <a href="{{ route('riwayat.peserta.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
-                                 Export Excel
-                             </a>
-                             {{-- Tombol untuk membuka modal Tambah Manual --}}
-                             <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-500">
-                                 Tambah Manual
-                             </button>
+                            {{-- Tombol untuk mengekspor data ke Excel --}}
+                            <a href="{{ route('riwayat.peserta.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                Export Excel
+                            </a>
+                            {{-- Tombol untuk membuka modal Tambah Manual --}}
+                            <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-500">
+                                Tambah Manual
+                            </button>
                         </div>
                     </div>
 
@@ -43,7 +43,7 @@
                             <div>
                                 <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Filter Kegiatan</label>
                                 <select name="kegiatan_id" id="kegiatan_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                    <option value="">Semua Kegiatan</option>
+                                    <option value="">-- Pilih Kegiatan --</option>
                                     @foreach ($kegiatan as $item)
                                         <option value="{{ $item->id }}" {{ request('kegiatan_id') == $item->id ? 'selected' : '' }}>
                                             {{ $item->nama_kegiatan }}
@@ -84,25 +84,27 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($pesertaList as $item)
                                     <tr>
-                                        {{-- Menggunakan $pesertaList untuk paginasi --}}
                                         <td class="px-6 py-4">{{ $loop->iteration + $pesertaList->firstItem() - 1 }}</td>
-                                        {{-- Mengakses langsung nama dan npm karena sudah di join --}}
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->npm }}</td>
-                                        {{-- Mendapatkan nama kegiatan dari request --}}
                                         <td class="px-6 py-4 text-gray-500">
                                             @if(request('kegiatan_id'))
                                                 {{ $kegiatan->firstWhere('id', request('kegiatan_id'))->nama_kegiatan ?? 'N/A' }}
                                             @else
-                                                N/A
+                                                -
                                             @endif
                                         </td>
-                                        {{-- Waktu absen tidak tersedia di query saat ini --}}
-                                        <td class="px-6 py-4 text-gray-500">N/A</td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
+                                        {{-- PERBAIKAN: Menampilkan waktu hadir --}}
+                                        <td class="px-6 py-4 text-gray-500">
+                                            @if($item->waktu_hadir)
+                                                {{ \Carbon\Carbon::parse($item->waktu_hadir)->format('d M Y, H:i') }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? '-' }}</td>
                                         <td class="px-6 py-4">
                                             @php
-                                                // Mendapatkan status dengan lebih aman
                                                 $status = $item->status ?? 'belum_hadir';
                                             @endphp
                                             @if($status == 'hadir')
@@ -116,38 +118,47 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            {{-- TOMBOL EDIT & HAPUS BARU --}}
                                             @if($item->absensi_id)
-                                                {{-- Tombol untuk membuka modal edit dengan data yang relevan --}}
                                                 <button 
                                                     class="text-indigo-600 hover:text-indigo-900"
-                                                    onclick="openEditModal('{{ $item->absensi_id }}', '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                    onclick="openEditModal({{ $item->absensi_id }}, '{{ $item->status }}', '{{ $item->keterangan ?? '' }}')">
                                                     Edit
                                                 </button>
                                                 <span class="text-gray-300 mx-1">|</span>
-                                                {{-- Tombol untuk membuka modal konfirmasi hapus --}}
                                                 <button 
                                                     class="text-red-600 hover:text-red-900"
-                                                    onclick="openDeleteModal('{{ $item->absensi_id }}')">
+                                                    onclick="openDeleteModal({{ $item->absensi_id }})">
                                                     Hapus
                                                 </button>
                                             @else
-                                                N/A
+                                                <span class="text-xs text-gray-400 italic">Belum ada absensi</span>
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Tidak ada data.</td></tr>
+                                    <tr>
+                                        <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                                            @if(request('kegiatan_id'))
+                                                Tidak ada data peserta yang cocok.
+                                            @else
+                                                Silakan pilih kegiatan terlebih dahulu untuk menampilkan data.
+                                            @endif
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
                     {{-- Pagination --}}
-                    <div class="mt-4">{{ $pesertaList->links() }}</div>
+                    <div class="mt-4">
+                        {{ $pesertaList->links() }}
+                    </div>
                 </div>
             </div>
         </div>
 
-       {{-- MODAL DIBERI ID BARU DAN KELAS 'hidden' --}}
+        {{-- MODAL UNTUK TAMBAH MANUAL --}}
         <div id="manualAttendanceModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
             <div id="modalContent" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Absensi Manual</h3>
@@ -155,12 +166,12 @@
                     @csrf
                     <input type="hidden" name="tipe" value="peserta">
                     <div class="space-y-4">
-                        {{-- Form input dengan error handling (tidak berubah) --}}
-                         <div>
+                        <div>
                             <label for="peserta_id" class="block text-sm font-medium text-gray-700">Pilih Peserta</label>
+                            {{-- PERBAIKAN: Menggunakan $semuaPeserta untuk dropdown --}}
                             <select name="peserta_id" id="peserta_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('peserta_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Peserta --</option>
-                                @foreach($pesertaList as $p)
+                                @foreach($semuaPeserta as $p)
                                     <option value="{{ $p->id }}" {{ old('peserta_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }} ({{ $p->npm }})</option>
                                 @endforeach
                             </select>
@@ -169,9 +180,8 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
-                            {{-- Ubah name, id, dan error key menjadi 'kegiatan_id' --}}
-                            <select name="kegiatan_id" id="kegiatan_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
+                            <label for="kegiatan_id_modal" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
+                            <select name="kegiatan_id" id="kegiatan_id_modal" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Kegiatan --</option>
                                 @foreach($kegiatan as $k)
                                     <option value="{{ $k->id }}" {{ old('kegiatan_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kegiatan }}</option>
@@ -182,23 +192,21 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                            <select name="status" id="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="hadir" {{ old('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
-                                <option value="izin" {{ old('status') == 'izin' ? 'selected' : '' }}>Izin</option>
-                                <option value="tidak_hadir" {{ old('status') == 'tidak_hadir' ? 'selected' : '' }}>Sakit</option>
+                            <label for="status_modal" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" id="status_modal" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                <option value="hadir">Hadir</option>
+                                <option value="izin">Izin</option>
+                                <option value="tidak_hadir">Sakit</option>
                             </select>
                         </div>
                     </div>
                     <div class="mt-6 flex justify-end space-x-3">
-                        {{-- TOMBOL BATAL DIBERI ID BARU --}}
                         <button type="button" id="closeModalBtn" class="px-4 py-2 bg-white border rounded-md font-semibold text-xs text-gray-700 uppercase hover:bg-gray-50">Batal</button>
                         <button type="submit" class="px-4 py-2 bg-gray-800 border rounded-md font-semibold text-xs text-white uppercase hover:bg-gray-700">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
 
         {{-- MODAL UNTUK EDIT RIWAYAT --}}
         <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -254,8 +262,7 @@
         const manualAttendanceModal = document.getElementById('manualAttendanceModal');
         const openModalBtn = document.getElementById('openModalBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
-        const modalContent = document.getElementById('modalContent');
-
+        
         function openManualModal() {
             if (manualAttendanceModal) {
                 manualAttendanceModal.classList.remove('hidden');

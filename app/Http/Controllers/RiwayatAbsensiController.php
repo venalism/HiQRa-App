@@ -16,75 +16,57 @@ use Maatwebsite\Excel\Facades\Excel;
 class RiwayatAbsensiController extends Controller
 {
     public function riwayatPeserta(Request $request)
-    {
-        // 🎯 Langkah 1: Ambil data kegiatan untuk dropdown filter di view
-        $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
+{
+    // Ambil semua kegiatan dan semua peserta untuk dropdown
+    $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
+    $semuaPeserta = Peserta::orderBy('nama')->get(); // <--- Ini untuk modal
 
-        // 🎯 Langkah 2: Ambil ID kegiatan dari request
-        $kegiatanId = $request->input('kegiatan_id');
-        $searchTerm = $request->input('search');
+    $kegiatanId = $request->input('kegiatan_id');
+    $searchTerm = $request->input('search');
 
-        // 🎯 Langkah 3: Mulai query dari tabel Peserta, bukan Absensi
+    // Defaultnya, buat koleksi kosong agar view tidak error
+    $pesertaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+
+    // Hanya jalankan query jika sebuah kegiatan sudah dipilih dari filter
+    if ($kegiatanId) {
         $query = Peserta::query();
-
-        // 🎯 Langkah 4: Terapkan filter berdasarkan target kegiatan jika ada
-        if ($kegiatanId) {
-            $selectedKegiatan = Kegiatan::with(['prodis', 'kelas'])->find($kegiatanId);
-
-            // Cek apakah kegiatan ini punya target (prodi atau kelas)
-            // KODE YANG DIPERBAIKI DI SINI
-            if ($selectedKegiatan) {
-                // Periksa apakah ada relasi prodi atau kelas yang terhubung
-                $hasProdis = $selectedKegiatan->prodis->isNotEmpty();
-                $hasKelas = $selectedKegiatan->kelas != null; // Cek apakah objek kelas ada
-                
-                if ($hasProdis || $hasKelas) {
-                     $query->where(function($q) use ($selectedKegiatan) {
-                        // Filter berdasarkan prodi yang ditargetkan
-                        $prodiIds = $selectedKegiatan->prodis->pluck('id');
-                        if ($prodiIds->isNotEmpty()) {
-                            $q->whereIn('prodi_id', $prodiIds);
-                        }
-                        
-                        // Filter berdasarkan kelas yang ditargetkan
-                        // Periksa apakah objek kelas ada sebelum mengambil ID
-                        if ($selectedKegiatan->kelas) {
-                            $q->orWhere('kelas_id', $selectedKegiatan->kelas->id);
-                        }
-                    });
-                }
-            }
+        
+        // Filter peserta berdasarkan target kelas dari kegiatan yang dipilih
+        $selectedKegiatan = Kegiatan::find($kegiatanId);
+        if ($selectedKegiatan && $selectedKegiatan->kelas_id) {
+            $query->where('peserta.kelas_id', $selectedKegiatan->kelas_id);
         }
 
-        // 🎯 Langkah 5: Gabungkan (join) dengan tabel absensi untuk cek status
+        // Terapkan pencarian nama jika ada
+        if ($searchTerm) {
+            $query->where('peserta.nama', 'like', "%{$searchTerm}%");
+        }
+
+        // Lakukan join dengan tabel absensi
         $query->leftJoin('absensi', function($join) use ($kegiatanId) {
             $join->on('peserta.id', '=', 'absensi.peserta_id')
-                ->where('absensi.kegiatan_id', '=', $kegiatanId)
-                ->where('absensi.status', '!=', 'belum_hadir');
+                 ->where('absensi.kegiatan_id', '=', $kegiatanId);
         });
         
-        // 🎯 Langkah 6: Pilih kolom yang dibutuhkan dan tambahkan status
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Pilih semua kolom yang kita butuhkan, termasuk 'waktu_hadir' dan 'absensi.id'
         $pesertaList = $query->select(
-            'peserta.id', 
+            'peserta.id as peserta_id', 
             'peserta.nama', 
             'peserta.npm', 
+            'absensi.id as absensi_id',      // <-- PENTING untuk tombol Aksi
             'absensi.status',
+            'absensi.waktu_hadir',           // <-- PENTING untuk kolom Waktu Absen
             'absensi.keterangan'
         )
-        ->orderBy('peserta.nama', 'asc');
-
-        // 🎯 Langkah 7: Terapkan filter pencarian nama jika ada
-        if ($searchTerm) {
-            $pesertaList->where('peserta.nama', 'like', "%{$searchTerm}%");
-        }
-
-        // 🎯 Langkah 8: Lakukan paginasi dan kirim data ke view
-        $pesertaList = $pesertaList->paginate(15)->withQueryString();
-
-        // 🎯 Langkah 9: Kirim semua variabel yang dibutuhkan ke view
-        return view('riwayat.peserta', compact('pesertaList', 'kegiatan'));
+        ->orderBy('peserta.nama', 'asc')
+        ->paginate(15)
+        ->withQueryString(); // Agar paginasi tetap membawa filter
     }
 
+    // Kirim semua variabel yang dibutuhkan ke view
+    return view('riwayat.peserta', compact('pesertaList', 'kegiatan', 'semuaPeserta'));
+}
     public function riwayatPanitia(Request $request)
     {
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
@@ -111,7 +93,7 @@ class RiwayatAbsensiController extends Controller
     {
         $validated = $request->validate([
             'kegiatan_id' => 'required|exists:kegiatan,id',
-            'status' => 'required|in:izin,tidak_hadir',
+            'status' => 'required|in:hadir,izin,tidak_hadir',
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
             'panitia_id' => 'required_if:tipe,panitia|exists:panitia,id',
