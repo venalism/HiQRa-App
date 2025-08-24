@@ -17,10 +17,7 @@ class Kegiatan extends Model
         'tanggal',
         'waktu',
         'lokasi',
-        'target_prodi',
-        'target_kelas',
-        'target_tingkat',
-        'target_jabatan',
+        'kelas_id',
     ];
 
     /**
@@ -41,5 +38,28 @@ class Kegiatan extends Model
     public function peserta()
     {
         return $this->belongsToMany(Peserta::class, 'absensi');
+    }
+    
+    /**
+     * Get the kelas that owns the Kegiatan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
+    /**
+     * The prodis that belong to the Kegiatan.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function prodis()
+    {
+        // Relasi BelongsToMany: Kegiatan memiliki banyak Prodi
+        // Asumsi: Ada tabel pivot (penghubung) untuk kegiatan dan prodi.
+        // Relasi ini dibutuhkan untuk filter pencarian yang kamu gunakan.
+        return $this->belongsToMany(Prodi::class);
     }
 }

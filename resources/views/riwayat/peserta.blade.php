@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('header')
-     📋 Absensi Peserta
+    📋 Absensi Peserta
 @endsection
 
 @section('content')
@@ -9,32 +9,37 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             @if(session('success'))
+                {{-- Notifikasi sukses --}}
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
             @if(session('error'))
-                 <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                {{-- Notifikasi error --}}
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 space-y-4 md:space-y-0">
                         <h3 class="text-lg font-medium">Data Riwayat</h3>
-                         <div class="flex space-x-2">
-                            <a href="{{ route('riwayat.peserta.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
-                                Export Excel
-                            </a>
-                            <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-500">
-                                Tambah Manual
-                            </button>
+                        <div class="flex space-x-2">
+                             {{-- Tombol untuk mengekspor data ke Excel --}}
+                             <a href="{{ route('riwayat.peserta.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500">
+                                 Export Excel
+                             </a>
+                             {{-- Tombol untuk membuka modal Tambah Manual --}}
+                             <button id="openModalBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 border rounded-md font-semibold text-xs text-white uppercase hover:bg-blue-500">
+                                 Tambah Manual
+                             </button>
                         </div>
                     </div>
 
+                    {{-- Formulir Filter dan Pencarian --}}
                     <form method="GET" action="{{ route('riwayat.peserta') }}" class="mb-6">
-                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                             <div>
                                 <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Filter Kegiatan</label>
                                 <select name="kegiatan_id" id="kegiatan_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -50,17 +55,18 @@
                                 <label for="search" class="block text-sm font-medium text-gray-700">Cari Nama</label>
                                 <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Masukkan nama">
                             </div>
-                            <div class="flex items-end">
+                            <div class="flex space-x-2">
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     Cari
                                 </button>
-                                <a href="{{ route('riwayat.peserta') }}" class="ml-3 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                                <a href="{{ route('riwayat.peserta') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                                     Reset
                                 </a>
                             </div>
                         </div>
                     </form>
 
+                    {{-- Tabel Data Riwayat --}}
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -76,52 +82,72 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($riwayat as $item)
+                                @forelse ($pesertaList as $item)
                                     <tr>
-                                        <td class="px-6 py-4">{{ $loop->iteration + $riwayat->firstItem() - 1 }}</td>
-                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->peserta->nama ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->peserta->npm }}</td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->kegiatan->nama_kegiatan ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('d F Y, H:i:s') }}</td>
+                                        {{-- Menggunakan $pesertaList untuk paginasi --}}
+                                        <td class="px-6 py-4">{{ $loop->iteration + $pesertaList->firstItem() - 1 }}</td>
+                                        {{-- Mengakses langsung nama dan npm karena sudah di join --}}
+                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->npm }}</td>
+                                        {{-- Mendapatkan nama kegiatan dari request --}}
+                                        <td class="px-6 py-4 text-gray-500">
+                                            @if(request('kegiatan_id'))
+                                                {{ $kegiatan->firstWhere('id', request('kegiatan_id'))->nama_kegiatan ?? 'N/A' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                        {{-- Waktu absen tidak tersedia di query saat ini --}}
+                                        <td class="px-6 py-4 text-gray-500">N/A</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4">
-                                            @if($item->status == 'hadir')
+                                            @php
+                                                // Mendapatkan status dengan lebih aman
+                                                $status = $item->status ?? 'belum_hadir';
+                                            @endphp
+                                            @if($status == 'hadir')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Hadir</span>
-                                            @elseif($item->status == 'tidak_hadir')
+                                            @elseif($status == 'tidak_hadir')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Sakit</span>
-                                            @elseif($item->status == 'izin')
+                                            @elseif($status == 'izin')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Izin</span>
                                             @else
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">{{ ucfirst($item->status) }}</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Belum Hadir</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            {{-- TOMBOL EDIT & HAPUS BARU --}}
-                                            <button 
-                                                class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="openEditModal({{ $item->id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
-                                                Edit
-                                            </button>
-                                            <span class="text-gray-300 mx-1">|</span>
-                                            <button 
-                                                class="text-red-600 hover:text-red-900"
-                                                onclick="openDeleteModal({{ $item->id }})">
-                                                Hapus
-                                            </button>
+                                            @if($item->absensi_id)
+                                                {{-- Tombol untuk membuka modal edit dengan data yang relevan --}}
+                                                <button 
+                                                    class="text-indigo-600 hover:text-indigo-900"
+                                                    onclick="openEditModal('{{ $item->absensi_id }}', '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                    Edit
+                                                </button>
+                                                <span class="text-gray-300 mx-1">|</span>
+                                                {{-- Tombol untuk membuka modal konfirmasi hapus --}}
+                                                <button 
+                                                    class="text-red-600 hover:text-red-900"
+                                                    onclick="openDeleteModal('{{ $item->absensi_id }}')">
+                                                    Hapus
+                                                </button>
+                                            @else
+                                                N/A
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data.</td></tr>
+                                    <tr><td colspan="8" class="px-6 py-4 text-center text-gray-500">Tidak ada data.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">{{ $riwayat->links() }}</div>
+                    {{-- Pagination --}}
+                    <div class="mt-4">{{ $pesertaList->links() }}</div>
                 </div>
             </div>
         </div>
 
-        {{-- MODAL DIBERI ID BARU DAN KELAS 'hidden' --}}
+       {{-- MODAL DIBERI ID BARU DAN KELAS 'hidden' --}}
         <div id="manualAttendanceModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
             <div id="modalContent" class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Absensi Manual</h3>
@@ -134,7 +160,7 @@
                             <label for="peserta_id" class="block text-sm font-medium text-gray-700">Pilih Peserta</label>
                             <select name="peserta_id" id="peserta_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('peserta_id') border-red-500 @enderror">
                                 <option value="">-- Pilih Peserta --</option>
-                                @foreach($peserta as $p)
+                                @foreach($pesertaList as $p)
                                     <option value="{{ $p->id }}" {{ old('peserta_id') == $p->id ? 'selected' : '' }}>{{ $p->nama }} ({{ $p->npm }})</option>
                                 @endforeach
                             </select>
@@ -173,7 +199,8 @@
             </div>
         </div>
     </div>
-    {{-- MODAL UNTUK EDIT RIWAYAT --}}
+
+        {{-- MODAL UNTUK EDIT RIWAYAT --}}
         <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
             <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
                 <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Riwayat Absensi</h3>
@@ -222,66 +249,55 @@
 
 @push('scripts')
 <script>
-    // Pastikan script berjalan setelah seluruh halaman dimuat
     document.addEventListener('DOMContentLoaded', function () {
-        
-        // Ambil elemen-elemen yang kita butuhkan dari halaman
-        const modal = document.getElementById('manualAttendanceModal');
-        const openBtn = document.getElementById('openModalBtn');
-        const closeBtn = document.getElementById('closeModalBtn');
+        // --- LOGIKA MODAL TAMBAH MANUAL ---
+        const manualAttendanceModal = document.getElementById('manualAttendanceModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
         const modalContent = document.getElementById('modalContent');
 
-        // Fungsi untuk membuka modal
-        function openModal() {
-            if (modal) {
-                modal.classList.remove('hidden');
+        function openManualModal() {
+            if (manualAttendanceModal) {
+                manualAttendanceModal.classList.remove('hidden');
             }
         }
 
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            if (modal) {
-                modal.classList.add('hidden');
+        function closeManualModal() {
+            if (manualAttendanceModal) {
+                manualAttendanceModal.classList.add('hidden');
             }
         }
         
-        // Tambahkan event listener ke tombol buka
-        if (openBtn) {
-            openBtn.addEventListener('click', openModal);
+        if (openModalBtn) {
+            openModalBtn.addEventListener('click', openManualModal);
         }
 
-        // Tambahkan event listener ke tombol tutup (cancel)
-        if (closeBtn) {
-            closeBtn.addEventListener('click', closeModal);
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', closeManualModal);
         }
 
-        // Tambahkan event listener untuk menutup modal jika klik di luar area kontennya
-        if (modal) {
-            modal.addEventListener('click', function (event) {
-                // Cek apakah yang diklik adalah area latar belakang modal, bukan kontennya
-                if (event.target === modal) {
-                    closeModal();
+        if (manualAttendanceModal) {
+            manualAttendanceModal.addEventListener('click', function (event) {
+                if (event.target === manualAttendanceModal) {
+                    closeManualModal();
                 }
             });
         }
         
-        // Cek jika ada error validasi dari server, maka buka modal secara otomatis
         @if ($errors->any())
-            openModal();
+            openManualModal();
         @endif
 
-         const editModal = document.getElementById('editModal');
+        // --- LOGIKA MODAL EDIT RIWAYAT ---
+        const editModal = document.getElementById('editModal');
         const editForm = document.getElementById('editForm');
         const editStatus = document.getElementById('edit_status');
         const editKeterangan = document.getElementById('edit_keterangan');
 
         window.openEditModal = function(id, status, keterangan) {
-            // Set action URL form dengan ID yang benar
             editForm.action = `/riwayat-absensi/${id}`;
-            // Set nilai awal di form
             editStatus.value = status;
             editKeterangan.value = keterangan;
-            // Tampilkan modal
             editModal.classList.remove('hidden');
         }
 
@@ -289,19 +305,33 @@
             editModal.classList.add('hidden');
         }
 
-        // === Logika BARU untuk Modal Hapus ===
+        if (editModal) {
+            editModal.addEventListener('click', function (event) {
+                if (event.target === editModal) {
+                    closeEditModal();
+                }
+            });
+        }
+
+        // --- LOGIKA MODAL HAPUS RIWAYAT ---
         const deleteModal = document.getElementById('deleteModal');
         const deleteForm = document.getElementById('deleteForm');
 
         window.openDeleteModal = function(id) {
-            // Set action URL form dengan ID yang benar
             deleteForm.action = `/riwayat-absensi/${id}`;
-            // Tampilkan modal
             deleteModal.classList.remove('hidden');
         }
 
         window.closeDeleteModal = function() {
             deleteModal.classList.add('hidden');
+        }
+
+        if (deleteModal) {
+            deleteModal.addEventListener('click', function (event) {
+                if (event.target === deleteModal) {
+                    closeDeleteModal();
+                }
+            });
         }
     });
 </script>

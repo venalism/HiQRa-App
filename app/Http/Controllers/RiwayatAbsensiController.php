@@ -17,26 +17,72 @@ class RiwayatAbsensiController extends Controller
 {
     public function riwayatPeserta(Request $request)
     {
+        // 🎯 Langkah 1: Ambil data kegiatan untuk dropdown filter di view
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
-        $peserta = Peserta::orderBy('nama', 'asc')->get();
-        $query = Absensi::with(['peserta', 'kegiatan'])->whereNotNull('peserta_id')->latest();
 
-        // --- PERBAIKAN DI SINI ---
-        if ($request->filled('kegiatan_id')) {
-            $query->where('kegiatan_id', $request->kegiatan_id); // Kembali menggunakan 'kegiatan_id'
+        // 🎯 Langkah 2: Ambil ID kegiatan dari request
+        $kegiatanId = $request->input('kegiatan_id');
+        $searchTerm = $request->input('search');
+
+        // 🎯 Langkah 3: Mulai query dari tabel Peserta, bukan Absensi
+        $query = Peserta::query();
+
+        // 🎯 Langkah 4: Terapkan filter berdasarkan target kegiatan jika ada
+        if ($kegiatanId) {
+            $selectedKegiatan = Kegiatan::with(['prodis', 'kelas'])->find($kegiatanId);
+
+            // Cek apakah kegiatan ini punya target (prodi atau kelas)
+            // KODE YANG DIPERBAIKI DI SINI
+            if ($selectedKegiatan) {
+                // Periksa apakah ada relasi prodi atau kelas yang terhubung
+                $hasProdis = $selectedKegiatan->prodis->isNotEmpty();
+                $hasKelas = $selectedKegiatan->kelas != null; // Cek apakah objek kelas ada
+                
+                if ($hasProdis || $hasKelas) {
+                     $query->where(function($q) use ($selectedKegiatan) {
+                        // Filter berdasarkan prodi yang ditargetkan
+                        $prodiIds = $selectedKegiatan->prodis->pluck('id');
+                        if ($prodiIds->isNotEmpty()) {
+                            $q->whereIn('prodi_id', $prodiIds);
+                        }
+                        
+                        // Filter berdasarkan kelas yang ditargetkan
+                        // Periksa apakah objek kelas ada sebelum mengambil ID
+                        if ($selectedKegiatan->kelas) {
+                            $q->orWhere('kelas_id', $selectedKegiatan->kelas->id);
+                        }
+                    });
+                }
+            }
         }
-        // --- AKHIR PERBAIKAN ---
 
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->whereHas('peserta', function ($q) use ($searchTerm) {
-                $q->where('nama', 'like', "%{$searchTerm}%");
-            });
+        // 🎯 Langkah 5: Gabungkan (join) dengan tabel absensi untuk cek status
+        $query->leftJoin('absensi', function($join) use ($kegiatanId) {
+            $join->on('peserta.id', '=', 'absensi.peserta_id')
+                ->where('absensi.kegiatan_id', '=', $kegiatanId)
+                ->where('absensi.status', '!=', 'belum_hadir');
+        });
+        
+        // 🎯 Langkah 6: Pilih kolom yang dibutuhkan dan tambahkan status
+        $pesertaList = $query->select(
+            'peserta.id', 
+            'peserta.nama', 
+            'peserta.npm', 
+            'absensi.status',
+            'absensi.keterangan'
+        )
+        ->orderBy('peserta.nama', 'asc');
+
+        // 🎯 Langkah 7: Terapkan filter pencarian nama jika ada
+        if ($searchTerm) {
+            $pesertaList->where('peserta.nama', 'like', "%{$searchTerm}%");
         }
 
-        $riwayat = $query->paginate(15)->withQueryString();
+        // 🎯 Langkah 8: Lakukan paginasi dan kirim data ke view
+        $pesertaList = $pesertaList->paginate(15)->withQueryString();
 
-        return view('riwayat.peserta', compact('riwayat', 'kegiatan', 'peserta'));
+        // 🎯 Langkah 9: Kirim semua variabel yang dibutuhkan ke view
+        return view('riwayat.peserta', compact('pesertaList', 'kegiatan'));
     }
 
     public function riwayatPanitia(Request $request)
@@ -45,11 +91,9 @@ class RiwayatAbsensiController extends Controller
         $panitia = Panitia::orderBy('nama', 'asc')->get();
         $query = Absensi::with(['panitia.divisi', 'kegiatan'])->whereNotNull('panitia_id')->latest();
 
-        // --- PERBAIKAN DI SINI ---
         if ($request->filled('kegiatan_id')) {
-            $query->where('kegiatan_id', $request->kegiatan_id); // Kembali menggunakan 'kegiatan_id'
+            $query->where('kegiatan_id', $request->kegiatan_id);
         }
-        // --- AKHIR PERBAIKAN ---
 
         if ($request->filled('search')) {
             $searchTerm = $request->search;
@@ -65,17 +109,15 @@ class RiwayatAbsensiController extends Controller
 
     public function storeManual(Request $request)
     {
-        // Di view, nama inputnya adalah 'id_kegiatan', jadi kita ganti nama variabelnya agar tidak bingung
         $validated = $request->validate([
-            'kegiatan_id' => 'required|exists:kegiatan,id', // Sesuaikan nama tabel ke 'kegiatan'
+            'kegiatan_id' => 'required|exists:kegiatan,id',
             'status' => 'required|in:izin,tidak_hadir',
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
             'panitia_id' => 'required_if:tipe,panitia|exists:panitia,id',
         ]);
 
-        // Cek duplikasi absensi
-        $isDuplicate = Absensi::where('kegiatan_id', $request->id_kegiatan)
+        $isDuplicate = Absensi::where('kegiatan_id', $request->kegiatan_id)
             ->where(function ($query) use ($request) {
                 if ($request->tipe == 'peserta') {
                     $query->where('peserta_id', $request->peserta_id);
@@ -90,12 +132,10 @@ class RiwayatAbsensiController extends Controller
 
         $dataToSave = $validated;
         
-        // 2. Tambahkan field-field wajib lainnya
         $dataToSave['user_id'] = Auth::id();
         $dataToSave['metode'] = 'manual';
         $dataToSave['waktu_hadir'] = now();
 
-        // Hapus 'tipe' karena tidak ada di tabel absensi
         unset($dataToSave['tipe']);
 
         Absensi::create($dataToSave);

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Kegiatan;
 use App\Models\Kelas;
-use Illuminate\Http\Request;
+use App\Models\Prodi;
 
 class KegiatanController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Tampilkan daftar semua kegiatan.
      */
     public function index()
     {
@@ -18,39 +19,46 @@ class KegiatanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Tampilkan formulir untuk membuat kegiatan baru.
      */
     public function create()
     {
-        $kelas = Kelas::all();
+        // Ambil semua data kelas dan muat relasi prodi-nya
+        $kelas = Kelas::with('prodi')->get();
         return view('kegiatan.create', compact('kelas'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan kegiatan yang baru dibuat ke database.
      */
     public function store(Request $request)
     {
+        // Validasi input sesuai dengan field di form create.blade.php
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
-            'target_prodi' => 'nullable|string|max:255',
-            'target_kelas' => 'nullable|string|max:255',
-            'target_tingkat' => 'nullable|string|max:255',
-            'target_jabatan' => 'nullable|string|max:255',
+            'kelas_id' => 'nullable|exists:kelas,id', // Validasi untuk dropdown kelas
         ]);
 
-        Kegiatan::create($request->all());
+        // Simpan data dengan aman
+        Kegiatan::create([
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'deskripsi' => $request->deskripsi,
+            'tanggal' => $request->tanggal,
+            'waktu' => $request->waktu,
+            'lokasi' => $request->lokasi,
+            'kelas_id' => $request->kelas_id,
+        ]);
 
         return redirect()->route('kegiatan.index')
                          ->with('success', 'Kegiatan baru berhasil ditambahkan.');
     }
-
+    
     /**
-     * Display the specified resource.
+     * Tampilkan detail kegiatan.
      */
     public function show(string $id)
     {
@@ -58,38 +66,45 @@ class KegiatanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Tampilkan form untuk mengedit kegiatan.
      */
     public function edit(Kegiatan $kegiatan)
     {
-        return view('kegiatan.edit', compact('kegiatan'));
+        // Tambahkan relasi prodi saat mengedit
+        $kelas = Kelas::with('prodi')->get();
+        return view('kegiatan.edit', compact('kegiatan', 'kelas'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Perbarui kegiatan di database.
      */
     public function update(Request $request, Kegiatan $kegiatan)
     {
+        // Perbaiki validasi untuk metode update
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
-            'target_prodi' => 'nullable|string|max:255',
-            'target_kelas' => 'nullable|string|max:255',
-            'target_tingkat' => 'nullable|string|max:255',
-            'target_jabatan' => 'nullable|string|max:255',
+            'kelas_id' => 'nullable|exists:kelas,id',
         ]);
 
-        $kegiatan->update($request->all());
+        $kegiatan->update([
+            'nama_kegiatan' => $request->nama_kegiatan,
+            'deskripsi' => $request->deskripsi,
+            'tanggal' => $request->tanggal,
+            'waktu' => $request->waktu,
+            'lokasi' => $request->lokasi,
+            'kelas_id' => $request->kelas_id,
+        ]);
 
         return redirect()->route('kegiatan.index')
                          ->with('success', 'Data kegiatan berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Hapus kegiatan dari database.
      */
     public function destroy(Kegiatan $kegiatan)
     {
