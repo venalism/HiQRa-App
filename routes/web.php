@@ -17,6 +17,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\Auth\UserLoginController;
 use App\Http\Controllers\Panitia\DashboardController as PanitiaDashboardController;
 use App\Http\Controllers\Peserta\DashboardController as PesertaDashboardController;
+use App\Http\Controllers\UserSettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +42,11 @@ Route::prefix('panitia')->group(function () {
     Route::get('/login', [UserLoginController::class, 'showPanitiaLoginForm'])->name('panitia.login');
     Route::post('/login', [UserLoginController::class, 'panitiaLogin']);
 
-    Route::middleware('auth:panitia')->group(function () {
+    Route::middleware('auth.multi:panitia')->group(function () {
         Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
-        // Tambahkan rute lain untuk panitia di sini
+        // Rute Settings Panitia
+        Route::get('/settings', [UserSettingsController::class, 'showPanitiaSettingsForm'])->name('panitia.settings');
+        Route::patch('/settings', [UserSettingsController::class, 'updatePanitia'])->name('panitia.settings.update');
     });
 });
 
@@ -52,9 +55,11 @@ Route::prefix('peserta')->group(function () {
     Route::get('/login', [UserLoginController::class, 'showPesertaLoginForm'])->name('peserta.login');
     Route::post('/login', [UserLoginController::class, 'pesertaLogin']);
 
-    Route::middleware('auth:peserta')->group(function () {
+    Route::middleware('auth.multi:peserta')->group(function () {
         Route::get('/dashboard', [PesertaDashboardController::class, 'index'])->name('peserta.dashboard');
-        // Tambahkan rute lain untuk peserta di sini
+        // Rute Settings Peserta
+        Route::get('/settings', [UserSettingsController::class, 'showPesertaSettingsForm'])->name('peserta.settings');
+        Route::patch('/settings', [UserSettingsController::class, 'updatePeserta'])->name('peserta.settings.update');
     });
 });
 

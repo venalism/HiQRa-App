@@ -24,7 +24,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ url("login/$url") }}">
+        <form method="POST" action="{{ url("$url/login") }}">
             @csrf
 
             <div class="mb-4">

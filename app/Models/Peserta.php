@@ -1,74 +1,47 @@
 <?php
 
+// File: app/Models/Peserta.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Peserta extends Model
+class Peserta extends Authenticatable
 {
     use HasFactory;
 
     protected $table = 'peserta';
-    protected $guarded = ['id'];
+
+    // Menggunakan guarded untuk mengizinkan semua mass assignment kecuali 'id'
+    protected $guarded = ['id']; 
+
     // Sembunyikan password
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
-    protected $fillable = [
-        'nama',
-        'email',
-        'npm',
-        'password',
-        'no_hp',
-        'prodi',
-        'kelas_id',
-        'barcode',
-        'user_id',
-    ];
-
-    /**
-     * Get the user that owns the Peserta
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    
+    // Relasi untuk kelas (sudah benar)
+    public function kelas()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 
-    /**
-     * Get all of the absensi for the Peserta
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    // Relasi prodi yang diperbaiki (melalui kelas)
+    public function prodi()
+    {
+        return $this->kelas->prodi();
+    }
+    
+    // Relasi absensi dan kegiatan
     public function absensi()
     {
         return $this->hasMany(Absensi::class);
     }
 
-    /**
-     * The kegiatan that belong to the Peserta
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
     public function kegiatan()
     {
         return $this->belongsToMany(Kegiatan::class, 'absensi');
-    }
-    // public function kelas()
-    // {
-    //     return $this->belongsTo(Kelas::class);
-    // }
-    public function prodi()
-    {
-        return $this->belongsTo(Prodi::class);
-    }
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'kelas_id');
     }
 }
