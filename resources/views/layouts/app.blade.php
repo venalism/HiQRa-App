@@ -85,7 +85,7 @@
         class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
         ← Kembali
     </button>
-    <form method="POST" action="{{ route('logout') }}">
+    <form method="POST" action="{{ route('admin.logout') }}">
         @csrf
         <button type="submit"
             class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">

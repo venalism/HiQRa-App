@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Tambahkan guard untuk panitia
+        'panitia' => [
+            'driver' => 'session',
+            'provider' => 'panitia',
+        ],
+        // Tambahkan guard untuk peserta
+        'peserta' => [
+            'driver' => 'session',
+            'provider' => 'peserta',
+        ],
     ],
 
     /*
@@ -64,7 +74,16 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
+        // Tambahkan provider untuk panitia
+        'panitia' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Panitia::class,
+        ],
+        // Tambahkan provider untuk peserta
+        'peserta' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Peserta::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

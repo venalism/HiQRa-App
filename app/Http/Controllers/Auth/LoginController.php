@@ -1,58 +1,58 @@
 <?php
 
+// File: app/Http/Controllers/Auth/AdminLoginController.php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class LoginController extends Controller
 {
     /**
-     * Menampilkan form login.
+     * Menampilkan form login untuk admin.
      */
     public function showLoginForm()
     {
-        if (Auth::check()) {
-            return redirect('/');
-            // Atau redirect('/dashboard') jika ingin ke dashboard
-        }
-        return view('auth.login');
+        return view('auth.admin-login');
     }
 
     /**
-     * Menangani permintaan login.
+     * Menangani permintaan login dari admin.
      */
     public function login(Request $request)
     {
+        // 1. Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // 2. Coba untuk melakukan autentikasi (menggunakan guard 'web' default untuk admin)
+        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+            // 3. Jika berhasil, regenerate session dan arahkan ke dashboard
             $request->session()->regenerate();
-
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/dashboard');
         }
 
+        // 4. Jika gagal, kembali ke halaman login dengan pesan error
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan catatan kami.',
+            'email' => 'Email atau Password yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
     /**
-     * Menangani permintaan logout.
+     * Menangani proses logout admin.
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/');
     }
 }

@@ -14,6 +14,9 @@ use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\RiwayatAbsensiController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\Auth\UserLoginController;
+use App\Http\Controllers\Panitia\DashboardController as PanitiaDashboardController;
+use App\Http\Controllers\Peserta\DashboardController as PesertaDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,10 +37,34 @@ Route::get('/guide', function () {
     return view('guide');
 })->name('guide');
 
-// Authentication Routes
-Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+Route::prefix('panitia')->group(function () {
+    Route::get('/login', [UserLoginController::class, 'showPanitiaLoginForm'])->name('panitia.login');
+    Route::post('/login', [UserLoginController::class, 'panitiaLogin']);
+
+    Route::middleware('auth:panitia')->group(function () {
+        Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
+        // Tambahkan rute lain untuk panitia di sini
+    });
+});
+
+// Rute untuk Peserta
+Route::prefix('peserta')->group(function () {
+    Route::get('/login', [UserLoginController::class, 'showPesertaLoginForm'])->name('peserta.login');
+    Route::post('/login', [UserLoginController::class, 'pesertaLogin']);
+
+    Route::middleware('auth:peserta')->group(function () {
+        Route::get('/dashboard', [PesertaDashboardController::class, 'index'])->name('peserta.dashboard');
+        // Tambahkan rute lain untuk peserta di sini
+    });
+});
+
+// Rute Logout (bisa diakses oleh panitia atau peserta)
+Route::post('/logout', [UserLoginController::class, 'logout'])->name('user.logout');
+
+// Admin Routes
+Route::get('/admin', [LoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin', [LoginController::class, 'login']);
+Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
 
 // Authenticated Routes

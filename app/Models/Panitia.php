@@ -9,13 +9,19 @@ use App\Models\Absensi;
 use App\Models\Kegiatan;
 use App\Models\Divisi;
 use App\Models\jabatan;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Panitia extends Model
 {
     use HasFactory;
 
     protected $table = 'panitia';
+    protected $guarded = ['id'];
+    // Sembunyikan password
+     protected $hidden = [
+        'password',
+        'remember_token',
+    ];
     
     protected $fillable = [
         'nama', 

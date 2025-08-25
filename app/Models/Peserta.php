@@ -4,12 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Peserta extends Model
 {
     use HasFactory;
 
     protected $table = 'peserta';
+    protected $guarded = ['id'];
+    // Sembunyikan password
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     protected $fillable = [
         'nama',
