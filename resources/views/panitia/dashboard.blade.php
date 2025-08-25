@@ -16,7 +16,7 @@
                     <h3 class="text-xl font-bold mb-4">QR Code Absensi</h3>
                     <div class="p-4 bg-gray-100 rounded-md">
                         <div class="qr-code">
-                            {!! QrCode::size(300)->generate($panitia->npm) !!}
+                            {!! QrCode::size(300)->generate($panitia->barcode) !!}
                         </div>
                     </div>
                     <p class="mt-4 text-sm text-gray-600">Tunjukkan kode ini untuk absensi</p>
@@ -65,12 +65,12 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($riwayatAbsensi as $absen)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $absen->kegiatan->nama }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $absen->kegiatan->nama_kegiatan }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {{ \Carbon\Carbon::parse($absen->kegiatan->tanggal)->format('d M Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            @if($absen->jam_masuk)
+                                            @if($absen->waktu_hadir)
                                                 <span
                                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Hadir</span>
                                             @else

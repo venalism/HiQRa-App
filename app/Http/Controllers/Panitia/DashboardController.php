@@ -17,9 +17,9 @@ class DashboardController extends Controller
         $absensi = Absensi::where('panitia_id', $panitia->id)->get();
         
         // Hitung status kehadiran
-        $hadirCount = $absensi->whereNotNull('jam_masuk')->count();
+        $hadirCount = $absensi->whereNotNull('waktu_hadir')->count();
         $izinCount = $absensi->where('keterangan', 'Izin')->count();
-        $sakitCount = $absensi->where('keterangan', 'Sakit')->count();
+        $sakitCount = $absensi->whereIn('keterangan', ['Sakit', 'tidak_hadir'])->count();
         $totalStatus = $hadirCount + $izinCount + $sakitCount;
 
         $hadirPercentage = ($totalStatus > 0) ? round(($hadirCount / $totalStatus) * 100) : 0;
