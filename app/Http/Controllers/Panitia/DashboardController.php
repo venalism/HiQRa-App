@@ -11,22 +11,33 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $panitia = Auth::user();
+        $panitia = Auth::guard('panitia')->user();
 
-        // Ambil data absensi untuk panitia yang sedang login
-        $absensi = Absensi::where('panitia_id', $panitia->id)
-                           ->with('kegiatan') // Eager load relasi kegiatan
-                           ->get();
+        // 1. Ambil SEMUA data absensi panitia untuk statistik
+        $absensi = Absensi::where('panitia_id', $panitia->id)->get();
+        
+        // Hitung status kehadiran
+        $hadirCount = $absensi->whereNotNull('jam_masuk')->count();
+        $izinCount = $absensi->where('keterangan', 'Izin')->count();
+        $sakitCount = $absensi->where('keterangan', 'Sakit')->count();
+        $totalStatus = $hadirCount + $izinCount + $sakitCount;
 
-        // Hitung statistik
-        $totalKegiatan = $absensi->pluck('kegiatan')->unique('id')->count();
-        $totalHadir = $absensi->whereNotNull('jam_masuk')->count();
+        $hadirPercentage = ($totalStatus > 0) ? round(($hadirCount / $totalStatus) * 100) : 0;
+        
+        // 2. Ambil HANYA 5 data riwayat absensi terbaru dengan eager loading
+        $riwayatAbsensi = Absensi::where('panitia_id', $panitia->id)
+                                 ->with('kegiatan')
+                                 ->orderBy('created_at', 'desc')
+                                 ->take(5)
+                                 ->get();
 
         return view('panitia.dashboard', [
             'panitia' => $panitia,
-            'totalKegiatan' => $totalKegiatan,
-            'totalHadir' => $totalHadir,
-            'riwayatAbsensi' => $absensi
+            'hadirCount' => $hadirCount,
+            'izinCount' => $izinCount,
+            'sakitCount' => $sakitCount,
+            'hadirPercentage' => $hadirPercentage,
+            'riwayatAbsensi' => $riwayatAbsensi,
         ]);
     }
 }

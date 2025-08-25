@@ -20,9 +20,12 @@
         }
 
 
-        #sidebar, #mainContent, #topbar {
+        #sidebar,
+        #mainContent,
+        #topbar {
             transition: all 0.3s ease-in-out;
         }
+
         #sidebar-overlay {
             transition: opacity 0.3s ease-in-out;
         }
@@ -30,18 +33,19 @@
         .sidebar-open #sidebar {
             transform: translateX(0);
         }
-        
+
         @media (min-width: 768px) {
+
             .sidebar-open #mainContent,
             .sidebar-open #topbar {
-                margin-left: 16rem; 
+                margin-left: 16rem;
             }
         }
 
         @media (max-width: 767px) {
             .sidebar-open #sidebar-overlay {
                 opacity: 1;
-                pointer-events: auto; 
+                pointer-events: auto;
             }
         }
     </style>
@@ -64,16 +68,21 @@
             <a href="{{ route('panitia.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Panitia</a>
             <a href="{{ route('peserta.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Peserta</a>
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Riwayat</h3>
-            <a href="{{ route('riwayat.peserta') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi Peserta</a>
-            <a href="{{ route('riwayat.panitia') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi Panitia</a>
+            <a href="{{ route('riwayat.peserta') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi
+                Peserta</a>
+            <a href="{{ route('riwayat.panitia') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi
+                Panitia</a>
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Master Data</h3>
-            <a href="{{ route('master.akademik') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Prodi & Kelas</a>
-            <a href="{{ route('master.organisasi') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Jabatan & Divisi</a>
+            <a href="{{ route('master.akademik') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Prodi &
+                Kelas</a>
+            <a href="{{ route('master.organisasi') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Jabatan &
+                Divisi</a>
             <a href="{{ route('import.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Import Data</a>
         </nav>
     </aside>
 
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()"
+        class="fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none"></div>
 
     <div id="mainContent" class="flex flex-col h-screen">
 
@@ -81,18 +90,18 @@
             <div class="py-4 px-6 md:px-12 flex justify-between items-center">
                 <h1 class="text-base px-8 md:text-xl font-bold text-gray-900">@yield('header')</h1>
                 <div class="flex items-center gap-2">
-    <button onclick="window.history.back()"
-        class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
-        ← Kembali
-    </button>
-    <form method="POST" action="{{ route('admin.logout') }}">
-        @csrf
-        <button type="submit"
-            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
-            Logout
-        </button>
-    </form>
-</div>
+                    <button onclick="window.history.back()"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
+                        ← Kembali
+                    </button>
+                    <form method="POST" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </header>
 

@@ -7,6 +7,48 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Aplikasi Absensi QR')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .red-gradient {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+        }
+
+        .text-red-gradient {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+
+        #sidebar,
+        #mainContent,
+        #topbar {
+            transition: all 0.3s ease-in-out;
+        }
+
+        #sidebar-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .sidebar-open #sidebar {
+            transform: translateX(0);
+        }
+
+        @media (min-width: 768px) {
+
+            .sidebar-open #mainContent,
+            .sidebar-open #topbar {
+                margin-left: 16rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .sidebar-open #sidebar-overlay {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -15,19 +57,20 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex">
-                        <div class="shrink-0 flex items-center">
-                            <a href="#">
-                                <h1 class="text-lg font-bold">HiQRa Dashboard</h1>
-                            </a>
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            <h1 class="text-base px-8 md:text-xl font-bold text-gray-900">@yield('header')</h1>
                         </div>
                     </div>
 
-                    <div class="flex items-center ms-6">
-                        <div class="font-medium text-base text-gray-800 mr-4">{{ Auth::user()->nama }}</div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.history.back()"
+                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
+                            ← Kembali
+                        </button>
                         <form method="POST" action="{{ route('user.logout') }}">
                             @csrf
                             <button type="submit"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 text-sm rounded-lg md:py-2 md:px-4 md:text-base">
                                 Logout
                             </button>
                         </form>
@@ -35,12 +78,6 @@
                 </div>
             </div>
         </nav>
-
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                @yield('header')
-            </div>
-        </header>
 
         <main>
             @yield('content')
