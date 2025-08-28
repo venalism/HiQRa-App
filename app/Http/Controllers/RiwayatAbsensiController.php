@@ -27,7 +27,7 @@ class RiwayatAbsensiController extends Controller
 
         // Mulai query dari model Absensi, sama seperti riwayatPanitia
         $query = Absensi::with(['peserta.kelas.prodi', 'kegiatan'])
-                        ->whereNotNull('peserta_id'); // Pastikan hanya absensi peserta
+            ->whereNotNull('peserta_id'); // Pastikan hanya absensi peserta
 
         // Terapkan filter jika ada
         if ($kegiatanId) {
@@ -48,7 +48,7 @@ class RiwayatAbsensiController extends Controller
             'kegiatan' => $kegiatan,
             'semuaPeserta' => $semuaPeserta,
         ]);
-    }   
+    }
     public function riwayatPanitia(Request $request)
     {
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
@@ -75,10 +75,12 @@ class RiwayatAbsensiController extends Controller
     {
         $validated = $request->validate([
             'kegiatan_id' => 'required|exists:kegiatan,id',
-            'status' => 'required|in:hadir,izin,tidak_hadir',
+            'status' => 'required|in:hadir,izin,tidak_hadir,sakit',
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
             'panitia_id' => 'required_if:tipe,panitia|exists:panitia,id',
+            'keterangan' => 'required|string|max:255',
+            'file_surat' => 'nullable|mimes:pdf|max:2048',
         ]);
 
         $isDuplicate = Absensi::where('kegiatan_id', $request->kegiatan_id)
@@ -94,22 +96,21 @@ class RiwayatAbsensiController extends Controller
             return back()->with('error', 'Gagal! Orang ini sudah terdata absensinya di kegiatan tersebut.');
         }
 
-       $dataToSave = [
+        $dataToSave = [
             'kegiatan_id' => $validated['kegiatan_id'],
             'peserta_id' => $validated['peserta_id'] ?? null,
             'panitia_id' => $validated['panitia_id'] ?? null,
             'user_id' => Auth::id(),
             'metode' => 'manual',
-            'waktu_hadir' => null, // Default null
-            'keterangan' => null, // Default null
+            'status' => $validated['status'],
+            'keterangan' => $validated['keterangan'],
         ];
 
-        if ($validated['status'] == 'hadir') {
-            $dataToSave['waktu_hadir'] = now();
-        } elseif ($validated['status'] == 'izin') {
-            $dataToSave['keterangan'] = 'Izin';
-        } elseif ($validated['status'] == 'tidak_hadir') {
-            $dataToSave['keterangan'] = 'Sakit';
+        if ($request->hasFile('file_surat')) {
+            $file = $request->file('file_surat');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('surat', $filename, 'public');
+            $dataToSave['file_surat'] = $path;
         }
 
         Absensi::create($dataToSave);
@@ -130,21 +131,36 @@ class RiwayatAbsensiController extends Controller
     public function update(Request $request, Absensi $absensi)
     {
         $validated = $request->validate([
-            'status' => 'required|in:hadir,izin,tidak_hadir',
+            'status' => 'required|in:hadir,izin,tidak_hadir,sakit',
             'keterangan' => 'nullable|string|max:255',
+            'file_surat' => 'nullable|mimes:pdf|max:2048',
         ]);
 
         $dataToUpdate = [];
 
         if ($validated['status'] == 'hadir') {
-            $dataToUpdate['waktu_hadir'] = $absensi->waktu_hadir ?? now(); // Isi jika kosong, atau biarkan jika sudah ada
-            $dataToUpdate['keterangan'] = null;
+            $dataToUpdate['status'] = $validated['status'];
+            $dataToUpdate['waktu_hadir'] = $absensi->waktu_hadir ?? now();
+            $dataToUpdate['keterangan'] = $validated['keterangan'];
         } elseif ($validated['status'] == 'izin') {
+            $dataToUpdate['status'] = $validated['status'];
             $dataToUpdate['waktu_hadir'] = null;
-            $dataToUpdate['keterangan'] = 'Izin';
+            $dataToUpdate['keterangan'] = $validated['keterangan']; // isi sesuai input user
+        } elseif ($validated['status'] == 'sakit') {
+            $dataToUpdate['status'] = $validated['status'];
+            $dataToUpdate['waktu_hadir'] = null;
+            $dataToUpdate['keterangan'] = $validated['keterangan']; // isi sesuai input user
         } elseif ($validated['status'] == 'tidak_hadir') {
+            $dataToUpdate['status'] = $validated['status'];
             $dataToUpdate['waktu_hadir'] = null;
-            $dataToUpdate['keterangan'] = 'Sakit';
+            $dataToUpdate['keterangan'] = 'tidak melakukan absensi'; // isi sesuai input user
+        }
+
+        if ($request->hasFile('file_surat')) {
+            $file = $request->file('file_surat');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('surat', $filename, 'public');
+            $dataToUpdate['file_surat'] = $path; // masukkan ke array update
         }
 
         $absensi->update($dataToUpdate);
