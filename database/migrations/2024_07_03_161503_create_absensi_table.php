@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Panitia yang scan
             $table->timestamp('waktu_hadir');
             $table->enum('metode', ['barcode', 'manual'])->default('barcode');
-            $table->enum('status', ['hadir', 'tidak_hadir', 'izin'])->default('hadir');
+            $table->enum('status', ['hadir', 'tidak_hadir', 'izin', 'sakit'])->default('hadir');
             $table->text('keterangan')->nullable();
             $table->timestamps();
 
