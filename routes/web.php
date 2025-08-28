@@ -117,5 +117,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Publicly accessible QR Code for participants
     Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'qr'])->name('peserta.qr');
+    Route::get('/peserta/{peserta}/qr/download', [PesertaController::class, 'downloadQr'])->name('peserta.qr.download');
     Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'qr'])->name('panitia.qr');
+    Route::get('/panitia/{panitia}/qr/download', [PanitiaController::class, 'downloadQr'])->name('panitia.qr.download');
 });

@@ -19,5 +19,10 @@
                 {!! QrCode::size(300)->generate($panitia->barcode) !!}
             </div>
         </div>
+        <div class="p-4 text-center">
+            <a href="{{ route('panitia.qr.download', $panitia->id) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                Download QR Code
+            </a>
+        </div>
     </div>
 @endsection

@@ -19,5 +19,10 @@
                 {!! QrCode::size(300)->generate($peserta->barcode) !!}
             </div>
         </div>
+        <div class="p-4 text-center">
+            <a href="{{ route('peserta.qr.download', $peserta->id) }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                Download QR Code
+            </a>
+        </div>
     </div>
 @endsection
