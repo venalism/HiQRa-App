@@ -22,6 +22,12 @@
                     <p class="mt-4 text-sm text-gray-600">Tunjukkan kode ini untuk absensi</p>
                     <p class="text-lg font-bold text-gray-800 mt-2">{{ $panitia->nama }}</p>
                     <p class="text-sm text-gray-500">{{ $panitia->npm }}</p>
+                    <div class="p-4 text-center">
+                        <a href="{{ route('panitia.qr.download', $panitia->id) }}"
+                            class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                            Download QR Code
+                        </a>
+                    </div>
                 </div>
 
                 {{-- GRID 2: STATISTIK KEHADIRAN --}}

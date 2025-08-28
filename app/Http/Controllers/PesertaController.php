@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Imports\PesertaWithRelationsImport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PesertaController extends Controller
 {
@@ -113,6 +113,16 @@ class PesertaController extends Controller
 
         // Logic untuk menampilkan halaman QR Code bisa ditambahkan di sini
         return view('peserta.qr', compact('peserta'));
+    }
+
+    public function downloadQr($id)
+    {
+        $peserta = Peserta::findOrFail($id);
+        $qrCode = QrCode::format('png')->size(300)->generate($peserta->barcode);
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-' . $peserta->nama . '-' . $peserta->npm . '.png"');
     }
 
     public function importExcel(Request $request)

@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Imports\PanitiaWithRelationsImport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PanitiaController extends Controller
 {
@@ -113,6 +113,17 @@ class PanitiaController extends Controller
 
         // Logic untuk menampilkan halaman QR Code bisa ditambahkan di sini
         return view('panitia.qr', compact('panitia'));
+    }
+
+    public function downloadQr($id)
+    {
+        $panitia = Panitia::findOrFail($id);
+        $qrCode = QrCode::format('png')->size(300)->generate($panitia->barcode);
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/png')
+            ->header('Content-Disposition', 'attachment; filename="qr-' . $panitia->nama . '-' . $panitia->npm . '.png"');
+
     }
 
     public function importExcel(Request $request)
