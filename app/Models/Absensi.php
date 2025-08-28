@@ -19,6 +19,7 @@ class Absensi extends Model
         'status',
         'metode',
         'waktu_hadir',
+        'file_surat',
         'keterangan',
     ];
 
