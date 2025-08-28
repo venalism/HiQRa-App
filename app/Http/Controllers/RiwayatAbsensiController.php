@@ -16,39 +16,58 @@ use Maatwebsite\Excel\Facades\Excel;
 class RiwayatAbsensiController extends Controller
 {
     public function riwayatPeserta(Request $request)
-    {
-        // Ambil data untuk dropdown filter
-        $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
-        $semuaPeserta = Peserta::orderBy('nama')->get(); // Untuk modal tambah manual
+{
+    // Ambil semua kegiatan dan semua peserta untuk dropdown
+    $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
+    $semuaPeserta = Peserta::orderBy('nama')->get(); // <--- Ini untuk modal
 
-        // Ambil input dari filter
-        $kegiatanId = $request->input('kegiatan_id');
-        $searchTerm = $request->input('search');
+    $kegiatanId = $request->input('kegiatan_id');
+    $searchTerm = $request->input('search');
 
-        // Mulai query dari model Absensi, sama seperti riwayatPanitia
-        $query = Absensi::with(['peserta.kelas.prodi', 'kegiatan'])
-                        ->whereNotNull('peserta_id'); // Pastikan hanya absensi peserta
+    // Defaultnya, buat koleksi kosong agar view tidak error
+    $pesertaList = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
 
-        // Terapkan filter jika ada
-        if ($kegiatanId) {
-            $query->where('kegiatan_id', $kegiatanId);
+    // Hanya jalankan query jika sebuah kegiatan sudah dipilih dari filter
+    if ($kegiatanId) {
+        $query = Peserta::query();
+        
+        // Filter peserta berdasarkan target kelas dari kegiatan yang dipilih
+        $selectedKegiatan = Kegiatan::find($kegiatanId);
+        if ($selectedKegiatan && $selectedKegiatan->kelas_id) {
+            $query->where('peserta.kelas_id', $selectedKegiatan->kelas_id);
         }
 
+        // Terapkan pencarian nama jika ada
         if ($searchTerm) {
-            $query->whereHas('peserta', function ($q) use ($searchTerm) {
-                $q->where('nama', 'like', "%{$searchTerm}%");
-            });
+            $query->where('peserta.nama', 'like', "%{$searchTerm}%");
         }
 
-        // Ambil data dengan paginasi
-        $riwayat = $query->latest()->paginate(15)->withQueryString();
+        // Lakukan join dengan tabel absensi
+        $query->leftJoin('absensi', function($join) use ($kegiatanId) {
+            $join->on('peserta.id', '=', 'absensi.peserta_id')
+                 ->where('absensi.kegiatan_id', '=', $kegiatanId);
+        });
+        
+        // --- PERBAIKAN UTAMA DI SINI ---
+        // Pilih semua kolom yang kita butuhkan, termasuk 'waktu_hadir' dan 'absensi.id'
+        $pesertaList = $query->select(
+            'peserta.id as peserta_id', 
+            'peserta.nama', 
+            'peserta.npm', 
+            'absensi.id as absensi_id',      // <-- PENTING untuk tombol Aksi
+            'absensi.status',
+            'absensi.waktu_hadir',           // <-- PENTING untuk kolom Waktu Absen
+            'absensi.keterangan'
+        )
+        ->orderBy('peserta.nama', 'asc')
+        ->paginate(15)
+        ->withQueryString(); // Agar paginasi tetap membawa filter
+    }
 
-        return view('riwayat.peserta', [
-            'riwayat' => $riwayat, // Ganti nama variabel agar konsisten
-            'kegiatan' => $kegiatan,
-            'semuaPeserta' => $semuaPeserta,
-        ]);
-    }   
+    // Kirim semua variabel yang dibutuhkan ke view
+    return view('riwayat.peserta', compact('pesertaList', 'kegiatan', 'semuaPeserta'));
+}
+
     public function riwayatPanitia(Request $request)
     {
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
@@ -73,6 +92,8 @@ class RiwayatAbsensiController extends Controller
 
     public function storeManual(Request $request)
     {
+        //dd($request->all());
+
         $validated = $request->validate([
             'kegiatan_id' => 'required|exists:kegiatan,id',
             'status' => 'required|in:hadir,izin,tidak_hadir',
@@ -94,7 +115,7 @@ class RiwayatAbsensiController extends Controller
             return back()->with('error', 'Gagal! Orang ini sudah terdata absensinya di kegiatan tersebut.');
         }
 
-       $dataToSave = [
+        $dataToSave = [
             'kegiatan_id' => $validated['kegiatan_id'],
             'peserta_id' => $validated['peserta_id'] ?? null,
             'panitia_id' => $validated['panitia_id'] ?? null,
