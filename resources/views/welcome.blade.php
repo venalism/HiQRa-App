@@ -435,25 +435,13 @@
     <nav class="nav-header">
         <div class="nav-container">
             <a href="/" class="logo">HiQRa</a>
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="nav-link">
-                        Dashboard
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="nav-link">
-                        Log in
-                    </a>
-
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="nav-link">
-                            Register
-                        </a>
-                    @endif
-                @endauth
-
-            @endif
-
+            @auth
+                <a href="{{ url('/dashboard') }}" class="nav-link">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('admin.login') }}" class="nav-link">Log in</a>
+            @endauth
         </div>
     </nav>
 

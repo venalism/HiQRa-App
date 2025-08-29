@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Imports\PesertaWithRelationsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class PesertaController extends Controller
 {
@@ -118,11 +119,35 @@ class PesertaController extends Controller
     public function downloadQr($id)
     {
         $peserta = Peserta::findOrFail($id);
-        $qrCode = QrCode::format('png')->size(300)->generate($peserta->barcode);
+        $path = public_path('images/template-qr.png');
 
-        return response($qrCode)
-            ->header('Content-Type', 'image/png')
-            ->header('Content-Disposition', 'attachment; filename="qr-' . $peserta->nama . '-' . $peserta->npm . '.png"');
+        // Pastikan file template ada sebelum melanjutkan
+        if (!file_exists($path)) {
+            // Hentikan eksekusi dan beri pesan error jika template tidak ada
+            abort(500, 'File template QR Code tidak ditemukan.');
+        }
+
+        // Langkah 1: Generate data mentah (binary) dari QR Code
+        $qrCodeData = QrCode::format('png')
+            ->size(350)
+            ->errorCorrection('H')
+            ->generate($peserta->barcode);
+
+        // Langkah 2: Baca QR Code dari data base64 stream (paling aman)
+        $qrCodeImage = Image::make('data://text/plain;base64,' . base64_encode($qrCodeData));
+
+        // Langkah 3: Buka template background
+        $template = Image::make($path);
+
+        // Langkah 4: Sisipkan gambar QR Code ke tengah template
+        $template->insert($qrCodeImage, 'center');
+
+        // Langkah 5: Buat response untuk di-download
+        $response = response($template->encode('png'));
+        $response->header('Content-Type', 'image/png');
+        $response->header('Content-Disposition', 'attachment; filename="qr-code-' . Str::slug($peserta->nama) . '-' . $peserta->npm . '.png"');
+
+        return $response;
     }
 
     public function importExcel(Request $request)

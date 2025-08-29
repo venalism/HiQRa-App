@@ -71,6 +71,11 @@ Route::get('/admin', [LoginController::class, 'showLoginForm'])->name('admin.log
 Route::post('/admin', [LoginController::class, 'login']);
 Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
 
+// Publicly accessible QR Code for participants
+    Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'qr'])->name('peserta.qr');
+    Route::get('/peserta/{peserta}/qr/download', [PesertaController::class, 'downloadQr'])->name('peserta.qr.download');
+    Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'qr'])->name('panitia.qr');
+    Route::get('/panitia/{panitia}/qr/download', [PanitiaController::class, 'downloadQr'])->name('panitia.qr.download');
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
@@ -114,10 +119,4 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('jabatan', JabatanController::class);
         Route::resource('divisi', DivisiController::class);
     });
-
-    // Publicly accessible QR Code for participants
-    Route::get('/peserta/{peserta}/qr', [PesertaController::class, 'qr'])->name('peserta.qr');
-    Route::get('/peserta/{peserta}/qr/download', [PesertaController::class, 'downloadQr'])->name('peserta.qr.download');
-    Route::get('/panitia/{panitia}/qr', [PanitiaController::class, 'qr'])->name('panitia.qr');
-    Route::get('/panitia/{panitia}/qr/download', [PanitiaController::class, 'downloadQr'])->name('panitia.qr.download');
 });

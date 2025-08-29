@@ -174,19 +174,13 @@
     <nav class="nav-header">
         <div class="nav-container">
             <a href="/" class="logo">HiQRa</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Home</a>
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="nav-link">Log in</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="nav-link">Register</a>
-                        @endif
-                    @endauth
-                @endif
-            </div>
+            @auth
+                <a href="{{ url('/dashboard') }}" class="nav-link">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('admin.login') }}" class="nav-link">Log in</a>
+            @endauth
         </div>
     </nav>
 
@@ -201,7 +195,7 @@
                 <div class="step">
                     <p>Pertama, login ke akun admin Anda. Anda akan disambut oleh <b>Dashboard</b>, yang menampilkan
                         ringkasan data penting seperti jumlah kegiatan, peserta, dan panitia.</p>
-                    
+
                     <div class="step-image">
                         <img src="{{ asset('images/guide1.png') }}" alt="Guide 1">
                     </div>
@@ -216,8 +210,8 @@
                         berikut secara berurutan:</p>
 
                     <div class="step-image">
-                         <img src="{{ asset('images/guide2.png') }}" alt="Guide 2">
-                    =
+                        <img src="{{ asset('images/guide2.png') }}" alt="Guide 2">
+                        =
                     </div>
                     <p class="image-caption">Sidebar navigasi untuk mengakses menu master data</p>
 
@@ -270,7 +264,7 @@
 
                     <div class="step-image">
                         <img src="{{ asset('images/guide6.png') }}" alt="Guide 6">
-                
+
                     </div>
                     <p class="image-caption">Form untuk menambahkan data peserta baru</p>
 
@@ -279,7 +273,7 @@
 
                     <div class="step-image">
                         <img src="{{ asset('images/guide7.png') }}" alt="Guide 7">
-        
+
                     </div>
                     <p class="image-caption">Contoh QR Code yang digenerate untuk setiap pengguna</p>
                 </div>
