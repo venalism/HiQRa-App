@@ -262,6 +262,10 @@
                         <input type="file" name="file_surat" id="file_surat" accept="application/pdf"
                             class="mt-1 block w-full text-sm text-gray-700 border rounded-md">
                     </div>
+                    <div>
+                        <label for="edit_keterangan" class="block text-sm font-medium text-gray-700">Keterangan</label>
+                        <input type="text" name="keterangan" id="edit_keterangan" class="mt-1 block w-full border rounded-md">
+                    </div>
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
                     <button type="button" onclick="closeEditModal()"

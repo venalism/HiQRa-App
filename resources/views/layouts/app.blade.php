@@ -7,6 +7,19 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Aplikasi Absensi QR')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+        if (isOpen) {
+            document.body.classList.add('sidebar-open');
+        }
+
+        window.toggleSidebar = function () {
+            document.body.classList.toggle('sidebar-open');
+            localStorage.setItem('sidebarOpen', document.body.classList.contains('sidebar-open'));
+        };
+    });
+</script>
     <style>
         .red-gradient {
             background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -48,6 +61,10 @@
                 pointer-events: auto;
             }
         }
+
+        .glow-text {
+            text-shadow: 0 0 6px #dc2626;
+        }
     </style>
 </head>
 
@@ -62,22 +79,31 @@
         class="fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white p-4 transform -translate-x-full z-40">
         <div class="text-2xl font-bold mb-8 text-center text-red-gradient">HiQRa</div>
         <nav>
-            <a href="{{ route('dashboard') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Dashboard</a>
+            <a href="{{ route('dashboard') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('dashboard') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}"> Dashboard</a>
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Manajemen</h3>
-            <a href="{{ route('kegiatan.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Kegiatan</a>
-            <a href="{{ route('panitia.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Panitia</a>
-            <a href="{{ route('peserta.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Peserta</a>
+            <a href="{{ route('kegiatan.index') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('kegiatan.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Kegiatan</a>
+            <a href="{{ route('panitia.index') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('panitia.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Panitia</a>
+            <a href="{{ route('peserta.index') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('peserta.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Peserta</a>
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Riwayat</h3>
-            <a href="{{ route('riwayat.peserta') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi
+            <a href="{{ route('riwayat.peserta') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('riwayat.peserta') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi
                 Peserta</a>
-            <a href="{{ route('riwayat.panitia') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Absensi
+            <a href="{{ route('riwayat.panitia') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('riwayat.panitia') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi
                 Panitia</a>
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Master Data</h3>
-            <a href="{{ route('master.akademik') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Prodi &
+            <a href="{{ route('master.akademik') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('master.akademik') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Prodi &
                 Kelas</a>
-            <a href="{{ route('master.organisasi') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Jabatan &
+            <a href="{{ route('master.organisasi') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('master.organisasi') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Jabatan &
                 Divisi</a>
-            <a href="{{ route('import.index') }}" class="block py-2.5 px-4 rounded hover:bg-gray-700">Import Data</a>
+            <a href="{{ route('import.index') }}" class="block py-2.5 px-4 transition-all
+          {{ Request::routeIs('import.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Import Data</a>
         </nav>
     </aside>
 

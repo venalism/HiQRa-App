@@ -105,13 +105,15 @@
                                 @forelse ($riwayat as $item)
                                     <tr>
                                         <td class="px-6 py-4">{{ $loop->iteration + $riwayat->firstItem() - 1 }}</td>
-                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->peserta->nama ?? 'N/A' }}
+                                        <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama ?? 'N/A' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->peserta->npm }}</td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->kegiatan->nama_kegiatan ?? 'N/A' }}
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->npm ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 text-gray-500">{{ $selectedKegiatan->nama_kegiatan ?? 'N/A'  }}
                                         </td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->created_at->format('d F Y, H:i:s') }}
-                                        </td>
+                                        @php
+                                            $waktu = $item->waktu_hadir ? \Carbon\Carbon::parse($item->waktu_hadir)->format('d F Y, H:i:s') : '-';
+                                        @endphp
+                                        <td>{{ $waktu }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4">
                                             @if ($item->status == 'hadir')
@@ -130,12 +132,12 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <button class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="openEditModal({{ $item->id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                onclick='openEditModal({{ $item->peserta_id }}, @json($item->status), @json($item->keterangan))'>
                                                 Edit
                                             </button>
                                             <span class="text-gray-300 mx-1">|</span>
                                             <button class="text-red-600 hover:text-red-900"
-                                                onclick="openDeleteModal({{ $item->id }})">
+                                                onclick="openDeleteModal({{ $item->peserta_id }})">
                                                 Hapus
                                             </button>
 
