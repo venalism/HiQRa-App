@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('divisis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama')->unique();
+            $table->string('nama'); //->unique();
             $table->foreignId('jabatan_id')->constrained('jabatans')->onDelete('cascade');
+            $table->unique(['nama', 'jabatan_id']);
             $table->timestamps();
         });
     }

@@ -39,6 +39,11 @@ class Kegiatan extends Model
     {
         return $this->belongsToMany(Peserta::class, 'absensi');
     }
+
+        public function panitias()
+    {
+        return $this->belongsToMany(Panitia::class, 'kegiatan_panitias');
+    }
     
     /**
      * Get the kelas that owns the Kegiatan

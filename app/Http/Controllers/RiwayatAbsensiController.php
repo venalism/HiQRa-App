@@ -13,6 +13,7 @@ use App\Exports\PesertaAbsensiExport;
 use App\Exports\PanitiaAbsensiExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class RiwayatAbsensiController extends Controller
 {
@@ -75,20 +76,45 @@ class RiwayatAbsensiController extends Controller
     {
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
         $panitia = Panitia::orderBy('nama', 'asc')->get();
-        $query = Absensi::with(['panitia.divisi', 'kegiatan'])->whereNotNull('panitia_id')->latest();
+        $selectedKegiatan = null;
+        $riwayat = new LengthAwarePaginator([], 0, 15);
 
         if ($request->filled('kegiatan_id')) {
-            $query->where('kegiatan_id', $request->kegiatan_id);
-        }
+            $selectedKegiatan = Kegiatan::find($request->kegiatan_id);
 
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->whereHas('panitia', function ($q) use ($searchTerm) {
-                $q->where('nama', 'like', "%{$searchTerm}%");
+            // Ambil semua panitia yang jadi target kegiatan
+            $query = Panitia::query();
+
+            if ($selectedKegiatan->target_divisi_id) {
+                $query->where('divisi_id', $selectedKegiatan->target_divisi_id);
+            }
+
+            if ($selectedKegiatan->panitias()->exists()) {
+                $query->orWhereIn('id', $selectedKegiatan->panitias->pluck('id'));
+            }
+
+            if ($request->filled('search')) {
+                $query->where('nama', 'like', "%{$request->search}%");
+            }
+
+            // Join dengan absensi
+            $query->leftJoin('absensi', function ($join) use ($request) {
+                $join->on('panitia.id', '=', 'absensi.panitia_id')
+                    ->where('absensi.kegiatan_id', '=', $request->kegiatan_id);
             });
-        }
 
-        $riwayat = $query->paginate(15)->withQueryString();
+            $riwayat = $query->select(
+                'panitia.id as panitia_id',
+                'panitia.nama',
+                'panitia.npm',
+                'panitia.divisi_id',
+                'absensi.id as absensi_id',
+                DB::raw("COALESCE(absensi.status, 'tidak_hadir') as status"),
+                'absensi.waktu_hadir',
+                'absensi.keterangan',
+                'absensi.file_surat'
+            )->orderBy('panitia.nama', 'asc')->paginate(15)->withQueryString();
+        }
 
         return view('riwayat.panitia', compact('riwayat', 'kegiatan', 'panitia'));
     }

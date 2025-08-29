@@ -46,6 +46,9 @@
                                 class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Lokasi</th>
                             <th scope="col"
+                                class="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Target</th>
+                            <th scope="col"
                                 class="py-3 px-6 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Aksi</th>
                         </tr>
@@ -59,6 +62,10 @@
                                 <td class="py-4 px-6 text-sm text-gray-600">
                                     {{ \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i') }} WIB</td>
                                 <td class="py-4 px-6 text-sm text-gray-600">{{ $kegiatan->lokasi }}</td>
+                                <td class="py-4 px-6 text-sm text-gray-600">
+                                    {{ ($kegiatan->kelas->prodi->nama ?? '') . ' - ' . ($kegiatan->kelas->nama ?? 'Umum') }}
+                                </td>
+                                </td>
                                 <td class="py-4 px-6 text-sm font-medium text-center">
                                     <div class="flex justify-center items-center space-x-2">
                                         <a href="{{ route('kegiatan.edit', $kegiatan->id) }}"

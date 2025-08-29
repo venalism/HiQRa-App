@@ -68,26 +68,41 @@
                         @endforeach
                     </select>
                     </div>
+                    <!-- Target Panitia -->
+                    <div class="md:col-span-2 border-t pt-4 mt-2">
+                        <label for="target_type" class="block text-sm font-medium text-gray-700 mb-1">Target Panitia</label>
+                        <select id="target_type" name="target_type" onchange="toggleTargetFields()" class="form-select block w-full">
+                            <option value="">-- Pilih Jenis Target --</option>
+                            <option value="panitia">Panitia Spesifik</option>
+                            <option value="divisi">Divisi</option>
+                        </select>
+                    </div>
 
-                    {{-- <!-- Target Kelas -->
-                    <div>
-                        <label for="target_kelas" class="block text-sm font-medium text-gray-700 mb-1">Target Kelas</label>
-                        <input type="text" name="target_kelas" id="target_kelas" class="input-field"
-                            value="{{ old('target_kelas') }}">
-                    </div> --}}
+                    <div id="target_panitia" class="md:col-span-2 hidden">
+                        <label for="panitia_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Panitia</label>
+                        <select name="panitia_id[]" multiple class="form-select block w-full">
+                            @foreach($panitias as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    {{-- <!-- Target Tingkat -->
-                    <div>
-                        <label for="target_tingkat" class="block text-sm font-medium text-gray-700 mb-1">Target Tingkat</label>
-                        <input type="text" name="target_tingkat" id="target_tingkat" class="input-field"
-                            value="{{ old('target_tingkat') }}">
-                    </div> --}}
+                    <div id="target_divisi" class="md:col-span-2 hidden">
+                        <label for="divisi_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Divisi</label>
+                        <select name="divisi_id" class="form-select block w-full">
+                            @foreach($divisis as $d)
+                                <option value="{{ $d->id }}">{{ $d->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                    {{-- <!-- Target Jabatan -->
-                    <div>
-                        <label for="target_jabatan" class="block text-sm font-medium text-gray-700 mb-1">Target Jabatan</label>
-                        <input type="text" name="target_jabatan" id="target_jabatan" class="input-field"
-                            value="{{ old('target_jabatan') }}">
+                    {{-- <div id="target_jabatan" class="md:col-span-2 hidden">
+                        <label for="jabatan_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Jabatan</label>
+                        <select name="jabatan_id" class="form-select block w-full">
+                            @foreach($jabatans as $j)
+                                <option value="{{ $j->id }}">{{ $j->nama }}</option>
+                            @endforeach
+                        </select>
                     </div> --}}
 
                     <!-- Deskripsi -->
@@ -113,3 +128,17 @@
         </div>
     </div>
 @endsection
+
+<script>
+    function toggleTargetFields() {
+        const type = document.getElementById('target_type').value;
+        document.getElementById('target_panitia').classList.add('hidden');
+        document.getElementById('target_divisi').classList.add('hidden');
+
+        if (type === 'panitia') {
+            document.getElementById('target_panitia').classList.remove('hidden');
+        } else if (type === 'divisi') {
+            document.getElementById('target_divisi').classList.remove('hidden');
+        } 
+    }
+</script>

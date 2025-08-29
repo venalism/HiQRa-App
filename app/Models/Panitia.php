@@ -43,4 +43,9 @@ class Panitia extends Authenticatable
     {
         return $this->belongsToMany(Kegiatan::class, 'absensi');
     }
+
+        public function kegiatans()
+    {
+        return $this->belongsToMany(Kegiatan::class, 'kegiatan_panitias');
+    }
 }

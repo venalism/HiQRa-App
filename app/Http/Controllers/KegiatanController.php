@@ -6,45 +6,41 @@ use Illuminate\Http\Request;
 use App\Models\Kegiatan;
 use App\Models\Kelas;
 use App\Models\Prodi;
+use App\Models\Panitia;
+use App\Models\Divisi;
+use App\Models\Jabatan;
 
 class KegiatanController extends Controller
 {
-    /**
-     * Tampilkan daftar semua kegiatan.
-     */
     public function index()
     {
         $kegiatans = Kegiatan::latest()->paginate(10);
         return view('kegiatan.index', compact('kegiatans'));
     }
 
-    /**
-     * Tampilkan formulir untuk membuat kegiatan baru.
-     */
     public function create()
     {
-        // Ambil semua data kelas dan muat relasi prodi-nya
         $kelas = Kelas::with('prodi')->get();
-        return view('kegiatan.create', compact('kelas'));
+        $panitias = Panitia::orderBy('nama')->get();
+        $divisis = Divisi::orderBy('nama')->get();
+        $jabatans = Jabatan::orderBy('nama')->get();
+
+        return view('kegiatan.create', compact('kelas', 'panitias', 'divisis', 'jabatans'));
     }
 
-    /**
-     * Simpan kegiatan yang baru dibuat ke database.
-     */
     public function store(Request $request)
     {
-        // Validasi input sesuai dengan field di form create.blade.php
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
-            'kelas_id' => 'nullable|exists:kelas,id', // Validasi untuk dropdown kelas
+            'kelas_id' => 'nullable|exists:kelas,id',
+            'target_type' => 'nullable|in:panitia,divisi,jabatan',
         ]);
 
-        // Simpan data dengan aman
-        Kegiatan::create([
+        $kegiatan = Kegiatan::create([
             'nama_kegiatan' => $request->nama_kegiatan,
             'deskripsi' => $request->deskripsi,
             'tanggal' => $request->tanggal,
@@ -53,34 +49,29 @@ class KegiatanController extends Controller
             'kelas_id' => $request->kelas_id,
         ]);
 
+        // Simpan target panitia
+        if ($request->target_type === 'panitia' && $request->has('panitia_id')) {
+            $kegiatan->panitias()->sync($request->panitia_id); // pastikan relasi many-to-many
+        } elseif ($request->target_type === 'divisi') {
+            $kegiatan->target_divisi_id = $request->divisi_id;
+            $kegiatan->save();
+        } elseif ($request->target_type === 'jabatan') {
+            $kegiatan->target_jabatan_id = $request->jabatan_id;
+            $kegiatan->save();
+        }
+
         return redirect()->route('kegiatan.index')
                          ->with('success', 'Kegiatan baru berhasil ditambahkan.');
     }
-    
-    /**
-     * Tampilkan detail kegiatan.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Tampilkan form untuk mengedit kegiatan.
-     */
     public function edit(Kegiatan $kegiatan)
     {
-        // Tambahkan relasi prodi saat mengedit
         $kelas = Kelas::with('prodi')->get();
         return view('kegiatan.edit', compact('kegiatan', 'kelas'));
     }
 
-    /**
-     * Perbarui kegiatan di database.
-     */
     public function update(Request $request, Kegiatan $kegiatan)
     {
-        // Perbaiki validasi untuk metode update
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -103,13 +94,9 @@ class KegiatanController extends Controller
                          ->with('success', 'Data kegiatan berhasil diperbarui.');
     }
 
-    /**
-     * Hapus kegiatan dari database.
-     */
     public function destroy(Kegiatan $kegiatan)
     {
         $kegiatan->delete();
-
         return redirect()->route('kegiatan.index')
                          ->with('success', 'Kegiatan berhasil dihapus.');
     }
