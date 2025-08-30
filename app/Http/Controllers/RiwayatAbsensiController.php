@@ -127,7 +127,7 @@ class RiwayatAbsensiController extends Controller
             'tipe' => 'required|in:peserta,panitia',
             'peserta_id' => 'required_if:tipe,peserta|exists:peserta,id',
             'panitia_id' => 'required_if:tipe,panitia|exists:panitia,id',
-            'keterangan' => 'required|string|max:255',
+            'keterangan' => 'nullable|string|max:255',
             'file_surat' => 'nullable|mimes:pdf|max:2048',
         ]);
 
