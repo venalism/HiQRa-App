@@ -110,7 +110,8 @@
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->npm }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $selectedKegiatan->nama_kegiatan ?? 'N/A' }}
                                         </td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $item->waktu_hadir ? \Carbon\Carbon::parse($item->waktu_hadir)->format('d F Y, H:i:s') : '-' }}
+                                        <td class="px-6 py-4 text-gray-500">
+                                            {{ $item->waktu_hadir ? \Carbon\Carbon::parse($item->waktu_hadir)->format('d F Y, H:i:s') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
                                         <td class="px-6 py-4">
@@ -129,15 +130,15 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="openEditModal({{ $item->absensi_id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
-                                                Edit
-                                            </button>
-                                            <span class="text-gray-300 mx-1">|</span>
-                                            <button class="text-red-600 hover:text-red-900"
-                                                onclick="openDeleteModal({{ $item->absensi_id }})">
-                                                Hapus
-                                            </button>
+                                            @if ($item->absensi_id)
+                                                <button class="text-indigo-600 hover:text-indigo-900"
+                                                    onclick='openEditModal({{ $item->absensi_id }}, @json($item->status), @json($item->keterangan))'>Edit</button>
+                                                <span class="text-gray-300 mx-1">|</span>
+                                                <button class="text-red-600 hover:text-red-900"
+                                                    onclick="openDeleteModal({{ $item->absensi_id }})">Hapus</button>
+                                            @else
+                                                <span class="text-gray-400">Belum ada data absensi</span>
+                                            @endif
 
                                             @if ($item->file_surat)
                                                 <span class="text-gray-300 mx-1">|</span>
@@ -243,7 +244,7 @@
     <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Riwayat Absensi</h3>
-            <form id="editForm" method="POST">
+            <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="space-y-4">
@@ -264,7 +265,8 @@
                     </div>
                     <div>
                         <label for="edit_keterangan" class="block text-sm font-medium text-gray-700">Keterangan</label>
-                        <input type="text" name="keterangan" id="edit_keterangan" class="mt-1 block w-full border rounded-md">
+                        <input type="text" name="keterangan" id="edit_keterangan"
+                            class="mt-1 block w-full border rounded-md">
                     </div>
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">

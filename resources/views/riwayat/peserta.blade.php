@@ -108,10 +108,12 @@
                                         <td class="px-6 py-4 font-medium text-gray-900">{{ $item->nama ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $item->npm ?? 'N/A' }}</td>
-                                        <td class="px-6 py-4 text-gray-500">{{ $selectedKegiatan->nama_kegiatan ?? 'N/A'  }}
+                                        <td class="px-6 py-4 text-gray-500">{{ $selectedKegiatan->nama_kegiatan ?? 'N/A' }}
                                         </td>
                                         @php
-                                            $waktu = $item->waktu_hadir ? \Carbon\Carbon::parse($item->waktu_hadir)->format('d F Y, H:i:s') : '-';
+                                            $waktu = $item->waktu_hadir
+                                                ? \Carbon\Carbon::parse($item->waktu_hadir)->format('d F Y, H:i:s')
+                                                : '-';
                                         @endphp
                                         <td>{{ $waktu }}</td>
                                         <td class="px-6 py-4 text-gray-500">{{ $item->keterangan ?? 'N/A' }}</td>
@@ -131,15 +133,15 @@
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <button class="text-indigo-600 hover:text-indigo-900"
-                                                onclick='openEditModal({{ $item->absensi_id }}, @json($item->status), @json($item->keterangan))'>
-                                                Edit
-                                            </button>
-                                            <span class="text-gray-300 mx-1">|</span>
-                                            <button class="text-red-600 hover:text-red-900"
-                                                onclick="openDeleteModal({{ $item->absensi_id }})">
-                                                Hapus
-                                            </button>
+                                            @if ($item->absensi_id)
+                                                <button class="text-indigo-600 hover:text-indigo-900"
+                                                    onclick='openEditModal({{ $item->absensi_id }}, @json($item->status), @json($item->keterangan))'>Edit</button>
+                                                <span class="text-gray-300 mx-1">|</span>
+                                                <button class="text-red-600 hover:text-red-900"
+                                                    onclick="openDeleteModal({{ $item->absensi_id }})">Hapus</button>
+                                            @else
+                                                <span class="text-gray-400">Belum ada data absensi</span>
+                                            @endif
 
                                             @if ($item->file_surat)
                                                 <span class="text-gray-300 mx-1">|</span>
@@ -226,7 +228,7 @@
                         </div>
                         <div>
                             <label for="keterangan">Keterangan</label>
-                            <input type="text" name="keterangan" id="keterangan" maxlength="255"
+                            <input type="text" name="keterangan" id="keterangan" required maxlength="255"
                                 class="mt-1 block w-full border rounded-md">
                         </div>
                     </div>
