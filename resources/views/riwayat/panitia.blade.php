@@ -130,12 +130,12 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <button class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="openEditModal({{ $item->panitia_id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
+                                                onclick="openEditModal({{ $item->absensi_id }}, '{{ $item->status }}', '{{ $item->keterangan }}')">
                                                 Edit
                                             </button>
                                             <span class="text-gray-300 mx-1">|</span>
                                             <button class="text-red-600 hover:text-red-900"
-                                                onclick="openDeleteModal({{ $item->panitia_id }})">
+                                                onclick="openDeleteModal({{ $item->absensi_id }})">
                                                 Hapus
                                             </button>
 
@@ -224,7 +224,7 @@
                         </div>
                         <div>
                             <label for="keterangan">Keterangan</label>
-                            <input type="text" name="keterangan" id="keterangan" required maxlength="255"
+                            <input type="text" name="keterangan" id="keterangan" maxlength="255"
                                 class="mt-1 block w-full border rounded-md">
                         </div>
                     </div>
