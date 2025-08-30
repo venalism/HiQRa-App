@@ -362,6 +362,12 @@
             color: #dc2626;
         }
 
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         .qr-animation {
             position: absolute;
             top: 50%;
@@ -440,7 +446,11 @@
                     Dashboard
                 </a>
             @else
-                <a href="{{ route('admin.login') }}" class="nav-link">Log in</a>
+                <div class="nav-auth">
+                    <a href="{{ route('admin.login') }}" class="nav-link">Admin</a>
+                    <a href="{{ route('panitia.login') }}" class="nav-link">Panitia</a>
+                    <a href="{{ route('peserta.login') }}" class="nav-link">Peserta</a>
+                </div>
             @endauth
         </div>
     </nav>
