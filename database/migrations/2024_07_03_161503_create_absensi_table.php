@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('peserta_id')->constrained('peserta')->onDelete('cascade');
             $table->foreignId('kegiatan_id')->constrained('kegiatan')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Panitia yang scan
-            $table->timestamp('waktu_hadir');
+            $table->timestamp('waktu_hadir')->nullable();
             $table->enum('metode', ['barcode', 'manual'])->default('barcode');
             $table->enum('status', ['hadir', 'tidak_hadir', 'izin', 'sakit'])->default('hadir');
             $table->text('keterangan')->nullable();
