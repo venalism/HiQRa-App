@@ -14,7 +14,7 @@ class KegiatanController extends Controller
 {
     public function index()
     {
-        $kegiatans = Kegiatan::latest()->paginate(10);
+        $kegiatans = Kegiatan::with('targetKelas')->latest()->paginate(10);
         return view('kegiatan.index', compact('kegiatans'));
     }
 
@@ -23,9 +23,9 @@ class KegiatanController extends Controller
         $kelas = Kelas::with('prodi')->get();
         $panitias = Panitia::orderBy('nama')->get();
         $divisis = Divisi::orderBy('nama')->get();
-        $jabatans = Jabatan::orderBy('nama')->get();
+        //$jabatans = Jabatan::orderBy('nama')->get();
 
-        return view('kegiatan.create', compact('kelas', 'panitias', 'divisis', 'jabatans'));
+        return view('kegiatan.create', compact('kelas', 'panitias', 'divisis'));
     }
 
     public function store(Request $request)
@@ -36,8 +36,11 @@ class KegiatanController extends Controller
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
-            'kelas_id' => 'nullable|exists:kelas,id',
-            'target_type' => 'nullable|in:panitia,divisi,jabatan',
+            'kelas_id' => 'nullable|array',
+            'kelas_id.*' => 'exists:kelas,id',
+            'target_type' => 'nullable|in:panitia,divisi',
+            'panitia_id' => 'nullable|array',
+            'panitia_id.*' => 'exists:panitias,id',
         ]);
 
         $kegiatan = Kegiatan::create([
@@ -46,18 +49,21 @@ class KegiatanController extends Controller
             'tanggal' => $request->tanggal,
             'waktu' => $request->waktu,
             'lokasi' => $request->lokasi,
-            'kelas_id' => $request->kelas_id,
         ]);
 
         // Simpan target panitia
         if ($request->target_type === 'panitia' && $request->has('panitia_id')) {
-            $kegiatan->panitias()->sync($request->panitia_id); // pastikan relasi many-to-many
-        } elseif ($request->target_type === 'divisi') {
-            $kegiatan->target_divisi_id = $request->divisi_id;
-            $kegiatan->save();
-        } elseif ($request->target_type === 'jabatan') {
-            $kegiatan->target_jabatan_id = $request->jabatan_id;
-            $kegiatan->save();
+            $kegiatan->panitias()->sync($request->panitia_id);
+        } elseif ($request->target_type === 'divisi' && $request->has('divisi_id')) {
+            $kegiatan->targetDivisis()->sync($request->divisi_id);
+        }
+        // } elseif ($request->target_type === 'jabatan') {
+        //     $kegiatan->target_jabatan_id = $request->jabatan_id;
+        //     $kegiatan->save();
+        // }
+
+        if ($request->has('kelas_id')) {
+            $kegiatan->targetKelas()->sync($request->kelas_id);
         }
 
         return redirect()->route('kegiatan.index')
@@ -67,7 +73,9 @@ class KegiatanController extends Controller
     public function edit(Kegiatan $kegiatan)
     {
         $kelas = Kelas::with('prodi')->get();
-        return view('kegiatan.edit', compact('kegiatan', 'kelas'));
+        $divisis = Divisi::orderBy('nama')->get();
+        $kegiatan->load('targetKelas');
+        return view('kegiatan.edit', compact('kegiatan', 'kelas', 'divisis'));
     }
 
     public function update(Request $request, Kegiatan $kegiatan)
@@ -78,7 +86,10 @@ class KegiatanController extends Controller
             'tanggal' => 'required|date',
             'waktu' => 'required|date_format:H:i',
             'lokasi' => 'required|string|max:255',
-            'kelas_id' => 'nullable|exists:kelas,id',
+            'divisi_id' => 'nullable|array',
+            'divisi_id.*' => 'exists:divisis,id',
+            'kelas_id' => 'nullable|array',
+            'kelas_id.*' => 'exists:kelas,id',
         ]);
 
         $kegiatan->update([
@@ -87,8 +98,16 @@ class KegiatanController extends Controller
             'tanggal' => $request->tanggal,
             'waktu' => $request->waktu,
             'lokasi' => $request->lokasi,
-            'kelas_id' => $request->kelas_id,
         ]);
+
+        //dd($request->kelas_id);
+        if ($request->target_type === 'divisi' && $request->has('divisi_id')) {
+            $kegiatan->targetDivisis()->sync($request->divisi_id);
+        }
+
+        if ($request->has('kelas_id')) {
+           $kegiatan->targetKelas()->sync($request->input('kelas_id', []));
+        }
 
         return redirect()->route('kegiatan.index')
                          ->with('success', 'Data kegiatan berhasil diperbarui.');

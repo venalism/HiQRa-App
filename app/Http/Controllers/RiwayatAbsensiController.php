@@ -35,9 +35,9 @@ class RiwayatAbsensiController extends Controller
         $query = Peserta::query();
         
         // Filter peserta berdasarkan target kelas dari kegiatan yang dipilih
-        $selectedKegiatan = Kegiatan::find($kegiatanId);
-        if ($selectedKegiatan && $selectedKegiatan->kelas_id) {
-            $query->where('peserta.kelas_id', $selectedKegiatan->kelas_id);
+        $selectedKegiatan = Kegiatan::with('targetKelas')->find($kegiatanId);
+        if ($selectedKegiatan && $selectedKegiatan->targetKelas()->exists()) {
+            $query->whereIn('peserta.kelas_id', $selectedKegiatan->targetKelas->pluck('id'));
         }
 
         // Terapkan pencarian nama jika ada
@@ -80,18 +80,18 @@ class RiwayatAbsensiController extends Controller
         $riwayat = new LengthAwarePaginator([], 0, 15);
 
         if ($request->filled('kegiatan_id')) {
-            $selectedKegiatan = Kegiatan::find($request->kegiatan_id);
+            $selectedKegiatan = Kegiatan::with(['targetDivisis', 'panitias'])->find($request->kegiatan_id);
 
             // Ambil semua panitia yang jadi target kegiatan
             $query = Panitia::query();
 
-            if ($selectedKegiatan->target_divisi_id) {
-                $query->where('divisi_id', $selectedKegiatan->target_divisi_id);
-            }
+            $divisiIds = $selectedKegiatan->targetDivisis->pluck('id')->toArray();
+            $panitiaIds = $selectedKegiatan->panitias->pluck('id')->toArray();
 
-            if ($selectedKegiatan->panitias()->exists()) {
-                $query->orWhereIn('id', $selectedKegiatan->panitias->pluck('id'));
-            }
+            $query->where(function ($q) use ($divisiIds, $panitiaIds) {
+                $q->whereIn('divisi_id', $divisiIds)
+                ->orWhereIn('id', $panitiaIds);
+            });
 
             if ($request->filled('search')) {
                 $query->where('nama', 'like', "%{$request->search}%");

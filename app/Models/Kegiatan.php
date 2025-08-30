@@ -17,7 +17,6 @@ class Kegiatan extends Model
         'tanggal',
         'waktu',
         'lokasi',
-        'kelas_id',
     ];
 
     /**
@@ -45,15 +44,20 @@ class Kegiatan extends Model
         return $this->belongsToMany(Panitia::class, 'kegiatan_panitias');
     }
     
+        public function targetDivisis()
+    {
+        return $this->belongsToMany(Divisi::class, 'kegiatan_target_divisi');
+    }
+
+        public function targetKelas()
+    {
+        return $this->belongsToMany(Kelas::class, 'kegiatan_kelas');
+    }
     /**
      * Get the kelas that owns the Kegiatan
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class);
-    }
 
     /**
      * The prodis that belong to the Kegiatan.

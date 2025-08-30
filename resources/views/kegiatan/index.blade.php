@@ -63,7 +63,13 @@
                                     {{ \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i') }} WIB</td>
                                 <td class="py-4 px-6 text-sm text-gray-600">{{ $kegiatan->lokasi }}</td>
                                 <td class="py-4 px-6 text-sm text-gray-600">
-                                    {{ ($kegiatan->kelas->prodi->nama ?? '') . ' - ' . ($kegiatan->kelas->nama ?? 'Umum') }}
+                                    @forelse($kegiatan->targetKelas as $kelas)
+                                        <span class="inline-block bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs mr-1">
+                                            {{ $kelas->prodi->nama }} - {{ $kelas->nama }}
+                                        </span>
+                                    @empty
+                                        <span class="text-gray-400 italic">Umum</span>
+                                    @endforelse
                                 </td>
                                 </td>
                                 <td class="py-4 px-6 text-sm font-medium text-center">
