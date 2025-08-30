@@ -61,29 +61,33 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
-                                    @forelse ($riwayatAbsensi as $absen)
+                                    @foreach ($riwayatAbsensi as $kegiatan)
                                         <tr>
-                                            <td class="px-4 py-2">{{ $absen->kegiatan->nama_kegiatan }}</td>
+                                            <td class="px-4 py-2">{{ $kegiatan->nama_kegiatan }}</td>
                                             <td class="px-4 py-2">
-                                                {{ \Carbon\Carbon::parse($absen->kegiatan->tanggal)->format('d M Y') }}</td>
+                                                {{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d M Y') }}
+                                            </td>
                                             <td class="px-4 py-2">
-                                                @if($absen->waktu_hadir)
+                                                @php
+                                                    $status = optional($kegiatan->absensi->first())->status;
+                                                @endphp
+
+                                                @if ($status == 'hadir')
                                                     <span
                                                         class="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold">Hadir</span>
+                                                @elseif ($status == 'sakit')
+                                                    <span
+                                                        class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">Sakit</span>
+                                                @elseif ($status == 'izin')
+                                                    <span
+                                                        class="px-2 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold">Izin</span>
                                                 @else
                                                     <span
-                                                        class="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">
-                                                        {{ $absen->keterangan ?? 'Belum Absen' }}
-                                                    </span>
+                                                        class="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-semibold">Absen</span>
                                                 @endif
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="px-4 py-3 text-center text-gray-500">Belum ada riwayat
-                                                absensi.</td>
-                                        </tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
