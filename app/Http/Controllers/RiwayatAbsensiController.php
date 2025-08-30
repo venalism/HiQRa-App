@@ -152,6 +152,7 @@ class RiwayatAbsensiController extends Controller
             'metode' => 'manual',
             'status' => $validated['status'],
             'keterangan' => $validated['keterangan'],
+            'waktu_hadir' => $validated['status'] === 'hadir' ? now() : null,
         ];
 
         if ($request->hasFile('file_surat')) {
