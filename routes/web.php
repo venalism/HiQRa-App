@@ -38,6 +38,7 @@ Route::get('/guide', function () {
     return view('guide');
 })->name('guide');
 
+// Rute untuk Panitia
 Route::prefix('panitia')->group(function () {
     Route::get('/login', [UserLoginController::class, 'showPanitiaLoginForm'])->name('panitia.login');
     Route::post('/login', [UserLoginController::class, 'panitiaLogin']);

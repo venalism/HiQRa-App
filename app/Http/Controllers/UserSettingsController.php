@@ -11,49 +11,51 @@ class UserSettingsController extends Controller
 {
     public function showPanitiaSettingsForm()
     {
-        return view('panitia.settings', ['user' => Auth::user()]);
+        return view('panitia.dashboard', ['panitia' => Auth::user()]);
     }
 
     public function updatePanitia(Request $request)
-    {
-        $user = Auth::user();
-        $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'no_hp' => ['required', 'string', 'max:15', 'unique:panitia,no_hp,' . $user->id],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
-        ]);
+{
+    $user = Auth::guard('panitia')->user(); // ✅ ambil user panitia
+    
+    $request->validate([
+        'nama' => ['required', 'string', 'max:255'],
+        'no_hp' => ['required', 'string', 'max:15', 'unique:panitia,no_hp,' . $user->id],
+        'password' => ['nullable', 'confirmed', Password::defaults()],
+    ]);
 
-        $user->nama = $request->nama;
-        $user->no_hp = $request->no_hp;
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
-        }
-        $user->save();
-
-        return back()->with('status', 'Profil berhasil diperbarui!');
+    $user->nama = $request->nama;
+    $user->no_hp = $request->no_hp;
+    if ($request->password) {
+        $user->password = Hash::make($request->password);
     }
+    $user->save();
+
+    return back()->with('status', 'Profil berhasil diperbarui!');
+}
+
+public function updatePeserta(Request $request)
+{
+    $user = Auth::guard('peserta')->user(); // ✅ ambil user peserta
+    
+    $request->validate([
+        'nama' => ['required', 'string', 'max:255'],
+        'no_hp' => ['required', 'string', 'max:15', 'unique:peserta,no_hp,' . $user->id],
+        'password' => ['nullable', 'confirmed', Password::defaults()],
+    ]);
+
+    $user->nama = $request->nama;
+    $user->no_hp = $request->no_hp;
+    if ($request->password) {
+        $user->password = Hash::make($request->password);
+    }
+    $user->save();
+
+    return back()->with('status', 'Profil berhasil diperbarui!');
+}
 
     public function showPesertaSettingsForm()
     {
-        return view('peserta.settings', ['user' => Auth::user()]);
-    }
-
-    public function updatePeserta(Request $request)
-    {
-        $user = Auth::user();
-        $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'no_hp' => ['required', 'string', 'max:15', 'unique:peserta,no_hp,' . $user->id],
-            'password' => ['nullable', 'confirmed', Password::defaults()],
-        ]);
-
-        $user->nama = $request->nama;
-        $user->no_hp = $request->no_hp;
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
-        }
-        $user->save();
-        
-        return back()->with('status', 'Profil berhasil diperbarui!');
+        return view('peserta.dashboard', ['peserta' => Auth::user()]);
     }
 }
