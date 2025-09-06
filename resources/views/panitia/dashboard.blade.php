@@ -31,24 +31,29 @@
                     {{-- GRID 2: Statistik Kehadiran --}}
                     <div class="bg-white p-6 rounded-2xl shadow-md">
                         <h3 class="text-xl font-bold mb-4">Statistik Kehadiran</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                            <div class="bg-blue-100 p-4 rounded-md">
+                        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center">
+                            <div class="bg-blue-100 p-4 rounded-md flex flex-col justify-center">
                                 <p class="text-3xl font-bold text-blue-800">{{ $hadirPercentage }}%</p>
                                 <p class="text-sm text-blue-600">Overall</p>
                             </div>
-                            <div class="bg-green-100 p-4 rounded-md">
+                            <div class="bg-green-100 p-4 rounded-md flex flex-col justify-center">
                                 <p class="text-2xl font-bold text-green-800">{{ $hadirCount }}</p>
                                 <p class="text-sm text-green-600">Hadir</p>
                             </div>
-                            <div class="bg-yellow-100 p-4 rounded-md">
+                            <div class="bg-yellow-100 p-4 rounded-md flex flex-col justify-center">
                                 <p class="text-2xl font-bold text-yellow-800">{{ $izinCount }}</p>
                                 <p class="text-sm text-yellow-600">Izin</p>
                             </div>
-                            <div class="bg-red-100 p-4 rounded-md">
+                            <div class="bg-red-100 p-4 rounded-md flex flex-col justify-center">
                                 <p class="text-2xl font-bold text-red-800">{{ $sakitCount }}</p>
                                 <p class="text-sm text-red-600">Sakit</p>
                             </div>
+                            <div class="bg-gray-100 p-4 rounded-md flex flex-col justify-center">
+                                <p class="text-2xl font-bold text-gray-800">{{ $absenCount }}</p>
+                                <p class="text-sm text-gray-600">Absen</p>
+                            </div>
                         </div>
+
 
                         <h3 class="text-lg font-bold mt-8 mb-4">Riwayat Kehadiran Terakhir</h3>
                         <div class="overflow-x-auto">

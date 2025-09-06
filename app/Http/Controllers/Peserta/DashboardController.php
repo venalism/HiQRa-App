@@ -26,9 +26,15 @@ class DashboardController extends Controller
         $absensi = Absensi::where('peserta_id', $peserta->id)->get();
 
         $hadirCount = $absensi->whereNotNull('waktu_hadir')->count();
-        $izinCount = $absensi->where('keterangan', 'Izin')->count();
-        $sakitCount = $absensi->where('keterangan', 'Sakit')->count();
+        $izinCount = $absensi->where('status', 'izin')->count();
+        $sakitCount = $absensi->where('status', 'sakit')->count();
         $totalStatus = $hadirCount + $izinCount + $sakitCount;
+
+        // Hitung total kegiatan dari riwayatAbsensi
+        $totalKegiatan = $riwayatAbsensi->count();
+
+        // Hitung absen = total kegiatan - total status tercatat
+        $absenCount = max(0, $totalKegiatan - $totalStatus);
 
         $hadirPercentage = ($totalStatus > 0) ? round(($hadirCount / $totalStatus) * 100) : 0;
 
@@ -37,6 +43,7 @@ class DashboardController extends Controller
             'hadirCount' => $hadirCount,
             'izinCount' => $izinCount,
             'sakitCount' => $sakitCount,
+            'absenCount' => $absenCount,
             'hadirPercentage' => $hadirPercentage,
             'riwayatAbsensi' => $riwayatAbsensi,
         ]);
