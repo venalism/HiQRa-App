@@ -20,7 +20,11 @@ class PesertaController extends Controller
         $prodis = Prodi::all();
         $kelas = Kelas::all();
 
-        $query = Peserta::with(['kelas.prodi']);
+        $sort = $request->get('sort', 'nama');
+        $direction = $request->get('direction', 'asc');
+
+        $query = Peserta::with(['kelas.prodi'])
+            ->orderBy($sort, $direction);
 
         // Filter berdasarkan Prodi (via relasi kelas → prodi)
         if ($request->filled('prodi_id')) {
