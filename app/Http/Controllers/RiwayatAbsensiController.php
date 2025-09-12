@@ -8,6 +8,10 @@ use App\Models\Absensi;
 use App\Models\Kegiatan;
 use App\Models\Peserta;
 use App\Models\Panitia;
+use App\Models\Jabatan;
+use App\Models\Divisi;
+use App\Models\Prodi;
+use App\Models\Kelas;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\PesertaAbsensiExport;
 use App\Exports\PanitiaAbsensiExport;
@@ -18,64 +22,85 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class RiwayatAbsensiController extends Controller
 {
     public function riwayatPeserta(Request $request)
-{
-    // Ambil semua kegiatan dan semua peserta untuk dropdown
-    $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
-    $semuaPeserta = Peserta::orderBy('nama')->get(); // <--- Ini untuk modal
-    $selectedKegiatan = null;
+    {
+        // Dropdown: kegiatan, peserta, prodi, kelas
+        $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
+        $semuaPeserta = Peserta::orderBy('nama')->get(); // untuk modal
+        $prodis = Prodi::all();
+        $kelas = Kelas::all();
+        $selectedKegiatan = null;
 
-    $kegiatanId = $request->input('kegiatan_id');
-    $searchTerm = $request->input('search');
+        $kegiatanId = $request->input('kegiatan_id');
+        $searchTerm = $request->input('search');
 
-    // Defaultnya, buat koleksi kosong agar view tidak error
-    $riwayat = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+        $riwayat = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
 
-    // Hanya jalankan query jika sebuah kegiatan sudah dipilih dari filter
-    if ($kegiatanId) {
-        $query = Peserta::query();
-        
-        // Filter peserta berdasarkan target kelas dari kegiatan yang dipilih
-        $selectedKegiatan = Kegiatan::with('targetKelas')->find($kegiatanId);
-        if ($selectedKegiatan && $selectedKegiatan->targetKelas()->exists()) {
-            $query->whereIn('peserta.kelas_id', $selectedKegiatan->targetKelas->pluck('id'));
+        if ($kegiatanId) {
+            $query = Peserta::with(['kelas.prodi']);
+
+            // Filter target kelas dari kegiatan
+            $selectedKegiatan = Kegiatan::with('targetKelas')->find($kegiatanId);
+            if ($selectedKegiatan && $selectedKegiatan->targetKelas()->exists()) {
+                $query->whereIn('peserta.kelas_id', $selectedKegiatan->targetKelas->pluck('id'));
+            }
+
+            // 🔎 Filter Prodi
+            if ($request->filled('prodi_id')) {
+                $query->whereHas('kelas.prodi', function ($q) use ($request) {
+                    $q->where('id', $request->prodi_id);
+                });
+            }
+
+            // 🔎 Filter Kelas
+            if ($request->filled('kelas_id')) {
+                $query->where('kelas_id', $request->kelas_id);
+            }
+
+            // 🔎 Pencarian nama
+            if ($searchTerm) {
+                $query->where('peserta.nama', 'like', "%{$searchTerm}%");
+            }
+
+            // Join ke absensi
+            $query->leftJoin('absensi', function ($join) use ($kegiatanId) {
+                $join->on('peserta.id', '=', 'absensi.peserta_id')
+                    ->where('absensi.kegiatan_id', '=', $kegiatanId);
+            });
+
+            $riwayat = $query->select(
+                'peserta.id as peserta_id',
+                'peserta.nama',
+                'peserta.npm',
+                'absensi.id as absensi_id',
+                DB::raw("COALESCE(absensi.status, 'tidak_hadir') as status"),
+                'absensi.waktu_hadir',
+                'absensi.keterangan',
+                'absensi.file_surat'
+            )
+                ->orderBy('peserta.nama', 'asc')
+                ->paginate(15)
+                ->withQueryString();
         }
 
-        // Terapkan pencarian nama jika ada
-        if ($searchTerm) {
-            $query->where('peserta.nama', 'like', "%{$searchTerm}%");
-        }
-
-        // Lakukan join dengan tabel absensi
-        $query->leftJoin('absensi', function($join) use ($kegiatanId) {
-            $join->on('peserta.id', '=', 'absensi.peserta_id')
-                 ->where('absensi.kegiatan_id', '=', $kegiatanId);
-        });
-        
-        // --- PERBAIKAN UTAMA DI SINI ---
-        // Pilih semua kolom yang kita butuhkan, termasuk 'waktu_hadir' dan 'absensi.id'
-        $riwayat = $query->select(
-            'peserta.id as peserta_id', 
-            'peserta.nama', 
-            'peserta.npm', 
-            'absensi.id as absensi_id',      // <-- PENTING untuk tombol Aksi
-             DB::raw("COALESCE(absensi.status, 'tidak_hadir') as status"),
-            'absensi.waktu_hadir',           // <-- PENTING untuk kolom Waktu Absen
-            'absensi.keterangan',
-            'absensi.file_surat'
-        )
-        ->orderBy('peserta.nama', 'asc')
-        ->paginate(15)
-        ->withQueryString(); // Agar paginasi tetap membawa filter
+        return view('riwayat.peserta', compact(
+            'riwayat',
+            'kegiatan',
+            'semuaPeserta',
+            'selectedKegiatan',
+            'prodis',
+            'kelas'
+        ));
     }
-
-    // Kirim semua variabel yang dibutuhkan ke view
-    return view('riwayat.peserta', compact('riwayat', 'kegiatan', 'semuaPeserta', 'selectedKegiatan'));
-}
 
     public function riwayatPanitia(Request $request)
     {
         $kegiatan = Kegiatan::orderBy('nama_kegiatan', 'asc')->get();
         $panitia = Panitia::orderBy('nama', 'asc')->get();
+
+        // 🔎 Tambahan untuk dropdown filter
+        $jabatans = Jabatan::all();
+        $divisis = Divisi::all();
+
         $selectedKegiatan = null;
         $riwayat = new LengthAwarePaginator([], 0, 15);
 
@@ -83,18 +108,31 @@ class RiwayatAbsensiController extends Controller
             $selectedKegiatan = Kegiatan::with(['targetDivisis', 'panitias'])->find($request->kegiatan_id);
 
             // Ambil semua panitia yang jadi target kegiatan
-            $query = Panitia::query();
+            $query = Panitia::with(['divisi.jabatan']);
 
             $divisiIds = $selectedKegiatan->targetDivisis->pluck('id')->toArray();
             $panitiaIds = $selectedKegiatan->panitias->pluck('id')->toArray();
 
             $query->where(function ($q) use ($divisiIds, $panitiaIds) {
                 $q->whereIn('divisi_id', $divisiIds)
-                ->orWhereIn('id', $panitiaIds);
+                    ->orWhereIn('id', $panitiaIds);
             });
 
+            // 🔎 Filter Nama
             if ($request->filled('search')) {
                 $query->where('nama', 'like', "%{$request->search}%");
+            }
+
+            // 🔎 Filter Jabatan
+            if ($request->filled('jabatan_id')) {
+                $query->whereHas('divisi.jabatan', function ($q) use ($request) {
+                    $q->where('id', $request->jabatan_id);
+                });
+            }
+
+            // 🔎 Filter Divisi
+            if ($request->filled('divisi_id')) {
+                $query->where('divisi_id', $request->divisi_id);
             }
 
             // Join dengan absensi
@@ -113,11 +151,21 @@ class RiwayatAbsensiController extends Controller
                 'absensi.waktu_hadir',
                 'absensi.keterangan',
                 'absensi.file_surat'
-            )->orderBy('panitia.nama', 'asc')->paginate(15)->withQueryString();
+            )
+                ->orderBy('panitia.nama', 'asc')
+                ->paginate(15)
+                ->withQueryString();
         }
 
-        return view('riwayat.panitia', compact('riwayat', 'kegiatan', 'panitia'));
+        return view('riwayat.panitia', compact(
+            'riwayat',
+            'kegiatan',
+            'panitia',
+            'jabatans',   // ⬅️ kirim ke view
+            'divisis'     // ⬅️ kirim ke view
+        ));
     }
+
 
     public function storeManual(Request $request)
     {
