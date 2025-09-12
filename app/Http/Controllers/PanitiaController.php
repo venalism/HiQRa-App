@@ -20,7 +20,11 @@ class PanitiaController extends Controller
         $jabatans = Jabatan::all();
         $divisis = Divisi::all();
 
-        $query = Panitia::with(['divisi.jabatan']);
+        $sort = $request->get('sort', 'nama');
+        $direction = $request->get('direction', 'asc');
+
+        $query = Panitia::with(['divisi.jabatan'])
+            ->orderBy($sort, $direction);
 
         // Filter berdasarkan Prodi (via relasi divisi → jabatan)
         if ($request->filled('jabatan_id')) {
