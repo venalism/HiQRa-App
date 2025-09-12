@@ -38,6 +38,7 @@
 
                     <form method="GET" action="{{ route('riwayat.panitia') }}" class="mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {{-- Filter Kegiatan --}}
                             <div>
                                 <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Filter
                                     Kegiatan</label>
@@ -52,23 +53,64 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            {{-- Filter Nama --}}
                             <div>
                                 <label for="search" class="block text-sm font-medium text-gray-700">Cari Nama</label>
                                 <input type="text" name="search" id="search" value="{{ request('search') }}"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     placeholder="Masukkan nama">
                             </div>
+
+                            {{-- Tombol Submit & Reset --}}
                             <div class="flex items-end">
                                 <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
                                     Cari
                                 </button>
                                 <a href="{{ route('riwayat.panitia') }}"
-                                    class="ml-3 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                                    class="ml-3 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50">
                                     Reset
                                 </a>
                             </div>
                         </div>
+
+                        {{-- Hanya tampil jika sudah pilih kegiatan --}}
+                        @if (request('kegiatan_id'))
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                {{-- Filter Jabatan --}}
+                                <div>
+                                    <label for="jabatan_id" class="block text-sm font-medium text-gray-700">Filter
+                                        Jabatan</label>
+                                    <select name="jabatan_id" id="jabatan_id"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option value="">Semua Jabatan</option>
+                                        @foreach ($jabatans as $j)
+                                            <option value="{{ $j->id }}"
+                                                {{ request('jabatan_id') == $j->id ? 'selected' : '' }}>
+                                                {{ $j->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Filter Divisi --}}
+                                <div>
+                                    <label for="divisi_id" class="block text-sm font-medium text-gray-700">Filter
+                                        Divisi</label>
+                                    <select name="divisi_id" id="divisi_id"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option value="">Semua Divisi</option>
+                                        @foreach ($divisis as $d)
+                                            <option value="{{ $d->id }}"
+                                                {{ request('divisi_id') == $d->id ? 'selected' : '' }}>
+                                                {{ $d->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
                     </form>
 
                     <div class="overflow-x-auto">
@@ -189,7 +231,8 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih Kegiatan</label>
+                            <label for="kegiatan_id" class="block text-sm font-medium text-gray-700">Pilih
+                                Kegiatan</label>
                             {{-- Ubah name, id, dan error key menjadi 'kegiatan_id' --}}
                             <select name="kegiatan_id" id="kegiatan_id" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm @error('kegiatan_id') border-red-500 @enderror">
