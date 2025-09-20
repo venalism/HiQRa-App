@@ -80,6 +80,13 @@ class KegiatanController extends Controller
 
     public function update(Request $request, Kegiatan $kegiatan)
     {
+        // Fallback waktu jika tidak diubah
+        if (!$request->filled('waktu')) {
+            $request->merge([
+                'waktu' => \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i'),
+            ]);
+        }
+
         $request->validate([
             'nama_kegiatan' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -100,17 +107,16 @@ class KegiatanController extends Controller
             'lokasi' => $request->lokasi,
         ]);
 
-        //dd($request->kelas_id);
         if ($request->target_type === 'divisi' && $request->has('divisi_id')) {
             $kegiatan->targetDivisis()->sync($request->divisi_id);
         }
 
         if ($request->has('kelas_id')) {
-           $kegiatan->targetKelas()->sync($request->input('kelas_id', []));
+            $kegiatan->targetKelas()->sync($request->input('kelas_id', []));
         }
 
         return redirect()->route('kegiatan.index')
-                         ->with('success', 'Data kegiatan berhasil diperbarui.');
+                        ->with('success', 'Data kegiatan berhasil diperbarui.');
     }
 
     public function destroy(Kegiatan $kegiatan)

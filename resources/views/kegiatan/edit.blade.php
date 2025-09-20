@@ -38,8 +38,8 @@
                 <!-- Waktu -->
                 <div>
                     <label for="waktu" class="block text-sm font-medium text-gray-700 mb-1">Waktu</label>
-                    <input type="time" name="waktu" id="waktu" class="input-field"
-                        value="{{ old('waktu', $kegiatan->waktu) }}" required>
+                    <input type="time" name="waktu" id="waktu" class="input-field" step="60"
+    value="{{ old('waktu', \Carbon\Carbon::parse($kegiatan->waktu)->format('H:i')) }}" required>
                     @error('waktu')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror

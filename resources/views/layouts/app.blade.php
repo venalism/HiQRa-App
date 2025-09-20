@@ -6,20 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Aplikasi Absensi QR')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const isOpen = localStorage.getItem('sidebarOpen') === 'true';
-        if (isOpen) {
-            document.body.classList.add('sidebar-open');
-        }
 
-        window.toggleSidebar = function () {
-            document.body.classList.toggle('sidebar-open');
-            localStorage.setItem('sidebarOpen', document.body.classList.contains('sidebar-open'));
-        };
-    });
-</script>
+    <!-- Preload sidebar-open class before CSS transition -->
+    <script>
+        if (localStorage.getItem('sidebarOpen') === 'true') {
+            document.documentElement.classList.add('sidebar-open-preload');
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         .red-gradient {
             background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -31,7 +27,6 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
 
         #sidebar,
         #mainContent,
@@ -48,7 +43,6 @@
         }
 
         @media (min-width: 768px) {
-
             .sidebar-open #mainContent,
             .sidebar-open #topbar {
                 margin-left: 16rem;
@@ -65,7 +59,28 @@
         .glow-text {
             text-shadow: 0 0 6px #dc2626;
         }
+
+        /* Disable transition during preload */
+        .sidebar-open-preload body.sidebar-open #sidebar,
+        .sidebar-open-preload body.sidebar-open #mainContent,
+        .sidebar-open-preload body.sidebar-open #topbar {
+            transition: none !important;
+        }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+            if (isOpen) {
+                document.body.classList.add('sidebar-open');
+            }
+
+            window.toggleSidebar = function () {
+                document.body.classList.toggle('sidebar-open');
+                localStorage.setItem('sidebarOpen', document.body.classList.contains('sidebar-open'));
+            };
+        });
+    </script>
 </head>
 
 <body class="bg-gray-100 text-gray-800 h-screen overflow-hidden">
@@ -80,30 +95,41 @@
         <div class="text-2xl font-bold mb-8 text-center text-red-gradient">HiQRa</div>
         <nav>
             <a href="{{ route('dashboard') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('dashboard') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}"> Dashboard</a>
+            {{ Request::routeIs('dashboard') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}"> Dashboard</a>
+
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Manajemen</h3>
+
             <a href="{{ route('kegiatan.index') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('kegiatan.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Kegiatan</a>
+            {{ Request::routeIs('kegiatan.index', 'kegiatan.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Kegiatan</a>
+
             <a href="{{ route('panitia.index') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('panitia.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Panitia</a>
+            {{ Request::routeIs('panitia.index', 'panitia.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Panitia</a>
+
             <a href="{{ route('peserta.index') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('peserta.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Peserta</a>
+            {{ Request::routeIs('peserta.index', 'peserta.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Peserta</a>
+
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Riwayat</h3>
+
             <a href="{{ route('riwayat.peserta') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('riwayat.peserta') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi
-                Peserta</a>
+            {{ Request::routeIs('riwayat.peserta', 'riwayat.peserta.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi Peserta</a>
+
             <a href="{{ route('riwayat.panitia') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('riwayat.panitia') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi
-                Panitia</a>
+            {{ Request::routeIs('riwayat.panitia', 'riwayat.panitia.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Absensi Panitia</a>
+
             <h3 class="px-4 mt-4 mb-2 text-xs text-gray-400 uppercase">Master Data</h3>
+
             <a href="{{ route('master.akademik') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('master.akademik') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Prodi &
-                Kelas</a>
+            {{ Request::routeIs('master.akademik', 'prodi.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">
+            Prodi & Kelas
+            </a>
+
             <a href="{{ route('master.organisasi') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('master.organisasi') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Jabatan &
-                Divisi</a>
+            {{ Request::routeIs('master.organisasi', 'jabatan.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">
+            Jabatan & Divisi
+            </a>
+
             <a href="{{ route('import.index') }}" class="block py-2.5 px-4 transition-all
-          {{ Request::routeIs('import.index') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Import Data</a>
+            {{ Request::routeIs('import.index', 'import.*') ? 'text-red-400 glow-text font-bold' : 'text-gray-300 hover:text-white' }}">Import Data</a>
         </nav>
     </aside>
 
@@ -139,12 +165,6 @@
             <p class="text-sm">&copy; {{ date('Y') }} Aplikasi Himatif</p>
         </footer>
     </div>
-
-    <script>
-        function toggleSidebar() {
-            document.body.classList.toggle('sidebar-open');
-        }
-    </script>
 
     @stack('scripts')
 </body>

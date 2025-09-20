@@ -310,20 +310,20 @@
                     </ul>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/scan-qr-interface.png" alt="Screenshot Interface Scan QR"> -->
-                        Gambar Interface Scan QR - Halaman untuk memilih kegiatan dan melakukan scanning QR Code
+                        <img src="{{ asset('images/scan-qr-interface.png') }}" alt="Screenshot Interface Scan QR">
+                        {{-- Gambar Interface Scan QR - Halaman untuk memilih kegiatan dan melakukan scanning QR Code --}}
                     </div>
                     <p class="image-caption">Interface untuk scanning QR Code</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/camera-scanning.png" alt="Screenshot Kamera Scanning QR"> -->
-                        Gambar Kamera Scanning - Tampilan kamera saat melakukan scan QR Code
+                        <img src="{{ asset('images/camera-scanning.png') }}" alt="Screenshot Kamera Scanning QR">
+                        {{-- Gambar Kamera Scanning - Tampilan kamera saat melakukan scan QR Code --}}
                     </div>
                     <p class="image-caption">Tampilan kamera saat melakukan scan QR Code</p>
 
                     <div class="step-image">
-                        <!-- <img src="path/to/attendance-success.png" alt="Screenshot Absensi Berhasil"> -->
-                        Gambar Konfirmasi Absensi - Notifikasi ketika absensi berhasil tercatat
+                        <img src="{{ asset('images/attendance-success.png') }}" alt="Screenshot Absensi Berhasil">
+                        {{-- Gambar Konfirmasi Absensi - Notifikasi ketika absensi berhasil tercatat --}}
                     </div>
                     <p class="image-caption">Konfirmasi ketika absensi berhasil tercatat</p>
 
