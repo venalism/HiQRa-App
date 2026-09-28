@@ -19,6 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
             'auth.multi' => \App\Http\Middleware\RedirectIfNotAuthenticated::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('panitia') || $request->is('panitia/*')) {
+                return route('panitia.login');
+            }
+            if ($request->is('peserta') || $request->is('peserta/*')) {
+                return route('peserta.login');
+            }
+            return route('admin.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $e, Request $request) {
@@ -31,8 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('peserta') || $request->is('peserta/*')) {
                 return redirect()->guest(route('peserta.login'));
             }
-            
-            // Fallback untuk guard default jika diperlukan
+
             $guard = Arr::get($e->guards(), 0);
             switch ($guard) {
                 case 'panitia':
