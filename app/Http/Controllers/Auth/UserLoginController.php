@@ -25,7 +25,7 @@ class UserLoginController extends Controller
 
         if (Auth::guard('panitia')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/panitia/dashboard');
+            return redirect('/panitia/dashboard');
         }
 
         return back()->withErrors([
@@ -49,7 +49,7 @@ class UserLoginController extends Controller
 
         if (Auth::guard('peserta')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/peserta/dashboard');
+            return redirect('/peserta/dashboard');
         }
 
         return back()->withErrors([
